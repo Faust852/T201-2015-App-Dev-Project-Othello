@@ -2,7 +2,7 @@ package be.ephec.othelloServer;
 
 public class Board {
 	private int boardSize = 8;
-	private Pawn[][] board = new Pawn[boardSize][boardSize];
+	protected Pawn[][] board = new Pawn[boardSize][boardSize];
 	
 	public Board(int boardSize) {
 		this.boardSize=boardSize;
@@ -24,8 +24,25 @@ public class Board {
 		for (int row=0; row<oBoard.board.length; row++) {
 			System.out.println("row "+row);
 			for (int col=0;col<oBoard.board[row].length;col++) {
-				System.out.println(oBoard.board[row][col].getCouleur());
+				System.out.println(oBoard.board[row][col].getPawnColor()); 
 			}
 		}
 	}
+	
+	public static void setUniqueValue(Board board, int row, int col, Pawn pawnToSet) {
+		board.board[row][col]=pawnToSet;
+	}
+	
+	public String toString() {
+		String showBoard="";
+		for (int row=0; row<board.length; row++) {
+			for (int col=0;col<board[row].length;col++) {
+				showBoard += board[row][col].getPawnColor();
+				showBoard += "\t";
+			}
+			showBoard+="\n";
+		}
+		return showBoard;
+	}
+
 }
