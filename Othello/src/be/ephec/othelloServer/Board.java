@@ -29,6 +29,10 @@ public class Board {
 		}
 	}
 	
+	public static Pawn getUniqueValue(Board board, int row, int col) {
+		return(board.board[row][col]);
+	}
+	
 	public static void setUniqueValue(Board board, int row, int col, Pawn pawnToSet) {
 		board.board[row][col]=pawnToSet;
 	}
