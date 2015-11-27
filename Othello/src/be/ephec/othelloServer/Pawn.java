@@ -8,10 +8,10 @@ import java.awt.Color;
  *
  */
 public class Pawn {
-	private final Color couleur;
+	protected final Color color;
 	
-	public Pawn(Color couleur) {
-			this.couleur=couleur;
+	public Pawn(Color color) {
+			this.color=color;
 		}
 	private static Pawn blackPawn = new Pawn(Color.BLACK);
 	private static Pawn whitePawn = new Pawn(Color.WHITE);
@@ -35,8 +35,14 @@ public class Pawn {
 	public void setWhitePawn(Pawn whitePawn) {
 		Pawn.whitePawn = whitePawn;
 	}
-	public Color getCouleur() {
-		return couleur;
+	public int getPawnColor() {
+		return color.getRGB();
+	}
+	public Pawn getOppositeColorPawn() {
+		Pawn oppositeColorPawn;
+		if(Color.getColor(color+"")==Color.BLACK) {oppositeColorPawn = new Pawn(Color.WHITE);return oppositeColorPawn;}
+		else if(Color.getColor(color+"")==Color.WHITE) {oppositeColorPawn = new Pawn(Color.BLACK);return oppositeColorPawn;}
+		else{return nonePawn;}	
 	}
 }
 
