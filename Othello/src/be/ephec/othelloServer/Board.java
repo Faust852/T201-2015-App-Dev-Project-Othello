@@ -8,6 +8,10 @@ public class Board {
 		this.boardSize=boardSize;
 		this.board=Board.setStartingBoard(board);
 	}
+	public Board(int boardSize, Pawn[][] board){
+		this.boardSize=boardSize;
+		this.board=board;
+	}
 	public static Pawn[][] setStartingBoard(Pawn[][] board) {
 		for (int row=0; row<board.length; row++) {
 			for (int col=0;col<board[row].length;col++) {
@@ -20,6 +24,24 @@ public class Board {
 		board[4][3] = Pawn.getBlackPawn();
 		return board;
 	}
+	
+	public Pawn[][] getBoard(){
+		return this.board;
+	}
+	
+	public static Pawn[][] setFullWhiteBoard(Pawn[][] board) {
+		for (int row=0; row<board.length; row++) {
+			for (int col=0;col<board[row].length;col++) {
+				board[row][col] = Pawn.getWhitePawn();
+			}
+		}
+		return board;
+	}
+	
+	public int getSizeBoard(){
+		return boardSize;
+	}
+	
 	public static void showStartingBoard(Board oBoard) {
 		for (int row=0; row<oBoard.board.length; row++) {
 			System.out.println("row "+row);
@@ -41,7 +63,9 @@ public class Board {
 		String showBoard="";
 		for (int row=0; row<board.length; row++) {
 			for (int col=0;col<board[row].length;col++) {
-				showBoard += board[row][col].getPawnColor();
+				if(board[row][col].getPawnColor()==-4144960)showBoard +="grey";
+				if(board[row][col].getPawnColor()==-1)showBoard +="white";
+				if(board[row][col].getPawnColor()==-16777216)showBoard +="black";
 				showBoard += "\t";
 			}
 			showBoard+="\n";
