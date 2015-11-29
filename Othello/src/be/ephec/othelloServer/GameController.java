@@ -23,11 +23,32 @@ public class GameController {
 	 * @param currentColor
 	 * @return
 	 */
-	public boolean isAdjacentToOppositePawnColor(Board board,int row,int col,Pawn currentColor) {
-		//todo
-		board.board[row][col].getPawnColor();
+	public static boolean isAdjacentToOppositePawnColor(Board board,int row,int col,Pawn currentColor) {
+		try {
+		if (isInGrid(row-1, col-1) 	&& board.board[row-1][col-1].getPawnColor() == currentColor.getOppositeColorPawn().getPawnColor() && board.board[row-1][col-1].getPawnColor() != Pawn.getNonePawn().getPawnColor())	return true;
+		if (isInGrid(row-1, col) 	&& board.board[row-1][col].getPawnColor() 	== currentColor.getOppositeColorPawn().getPawnColor() && board.board[row-1][col-1].getPawnColor() != Pawn.getNonePawn().getPawnColor())	return true;
+		if (isInGrid(row-1, col+1) 	&& board.board[row-1][col+1].getPawnColor() == currentColor.getOppositeColorPawn().getPawnColor() && board.board[row-1][col-1].getPawnColor() != Pawn.getNonePawn().getPawnColor())	return true;
+		if (isInGrid(row, col-1) 	&& board.board[row][col-1].getPawnColor() 	== currentColor.getOppositeColorPawn().getPawnColor() && board.board[row-1][col-1].getPawnColor() != Pawn.getNonePawn().getPawnColor())	return true;
+		if (isInGrid(row, col+1) 	&& board.board[row][col+1].getPawnColor() 	== currentColor.getOppositeColorPawn().getPawnColor() && board.board[row-1][col-1].getPawnColor() != Pawn.getNonePawn().getPawnColor())	return true;
+		if (isInGrid(row+1, col-1) 	&& board.board[row-1][col-1].getPawnColor() == currentColor.getOppositeColorPawn().getPawnColor() && board.board[row-1][col-1].getPawnColor() != Pawn.getNonePawn().getPawnColor())	return true;
+		if (isInGrid(row+1, col) 	&& board.board[row-1][col].getPawnColor()	== currentColor.getOppositeColorPawn().getPawnColor() && board.board[row-1][col-1].getPawnColor() != Pawn.getNonePawn().getPawnColor())	return true;
+		if (isInGrid(row+1, col+1) 	&& board.board[row-1][col+1].getPawnColor() == currentColor.getOppositeColorPawn().getPawnColor() && board.board[row-1][col-1].getPawnColor() != Pawn.getNonePawn().getPawnColor())	return true;
 		return false;
+		}catch(Exception e){
+			return false;
+		}
 	}
+	
+	public static boolean isInGrid(int row, int col) {
+		try {
+			if(row < 0 || col < 0) {return false;}
+		    if(row >= 7 || row >= 7) {return false;} //need to do a getSize from board, but issue with static ??
+		    return true;
+		}catch(Exception e){
+			return false;
+		}
+	}
+	
 	
 	/**
 	 * 

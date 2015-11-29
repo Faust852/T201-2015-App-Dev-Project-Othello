@@ -15,13 +15,23 @@ public class Pawn {
 		}
 	private static Pawn blackPawn = new Pawn(Color.BLACK);
 	private static Pawn whitePawn = new Pawn(Color.WHITE);
-	private static Pawn nonePawn = new Pawn(new Color(122,122,122,0));
+	private static Pawn nonePawn = new Pawn(Color.LIGHT_GRAY);
+	private static Pawn possiblePawn = new Pawn(Color.BLUE);
 
 	public static Pawn getBlackPawn() {
 		return blackPawn;
 	}
 	public void setBlackPawn(Pawn blackPawn) {
 		Pawn.blackPawn = blackPawn;
+	}
+	public static Pawn getPossiblePawn() {
+		return possiblePawn;
+	}
+	public static void setPossiblePawn(Pawn possiblePawn) {
+		Pawn.possiblePawn = possiblePawn;
+	}
+	public Color getColor() {
+		return color;
 	}
 	public static Pawn getWhitePawn() {
 		return whitePawn;
