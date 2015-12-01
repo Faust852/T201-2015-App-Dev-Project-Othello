@@ -1,58 +1,54 @@
 package be.ephec.othelloServer;
 
-import java.awt.Color;
-
 /**
  * @author David Micciche
  * @version 0.0
  *
  */
 public class Pawn {
-	protected final Color color;
+	protected int stateOfPawn;
 	
-	public Pawn(Color color) {
-			this.color=color;
-		}
-	private static Pawn blackPawn = new Pawn(Color.BLACK);
-	private static Pawn whitePawn = new Pawn(Color.WHITE);
-	private static Pawn nonePawn = new Pawn(Color.LIGHT_GRAY);
-	private static Pawn possiblePawn = new Pawn(Color.BLUE);
+	private static final int blackPawn =  -1;
+	private static final int whitePawn = 1;
+	private static final int nonePawn = 0;
+	private static final int possiblePawn = 2;
+	
+	public Pawn(){
+	}
+	public Pawn(int stateOfPawn) {
+			this.stateOfPawn=stateOfPawn;
+	}
 
-	public static Pawn getBlackPawn() {
+	public int getValueOfPawn() {
+		return this.stateOfPawn;
+	}
+	
+	public void setValueOfPawn(int stateOfPawn) {
+		this.stateOfPawn = stateOfPawn;
+	}
+
+	public static int getBlackPawn() {
 		return blackPawn;
 	}
-	public void setBlackPawn(Pawn blackPawn) {
-		Pawn.blackPawn = blackPawn;
-	}
-	public static Pawn getPossiblePawn() {
-		return possiblePawn;
-	}
-	public static void setPossiblePawn(Pawn possiblePawn) {
-		Pawn.possiblePawn = possiblePawn;
-	}
-	public Color getColor() {
-		return color;
-	}
-	public static Pawn getWhitePawn() {
+
+	public static int getWhitePawn() {
 		return whitePawn;
 	}
-	public static Pawn getNonePawn() {
+
+	public static int getNonePawn() {
 		return nonePawn;
 	}
-	public static void setNonePawn(Pawn nonePawn) {
-		Pawn.nonePawn = nonePawn;
+
+	public static int getPossiblePawn() {
+		return possiblePawn;
 	}
-	public void setWhitePawn(Pawn whitePawn) {
-		Pawn.whitePawn = whitePawn;
-	}
-	public int getPawnColor() {
-		return color.getRGB();
-	}
+
 	public Pawn getOppositeColorPawn() {
-		Pawn oppositeColorPawn;
-		if(Color.getColor(color+"")==Color.BLACK) {oppositeColorPawn = new Pawn(Color.WHITE);return oppositeColorPawn;}
-		else if(Color.getColor(color+"")==Color.WHITE) {oppositeColorPawn = new Pawn(Color.BLACK);return oppositeColorPawn;}
-		else{return nonePawn;}	
+		Pawn oppositeColorPawn = new Pawn(0);
+		if(this.getValueOfPawn() == 1) {oppositeColorPawn.setValueOfPawn(Pawn.getBlackPawn());}
+		else if(this.getValueOfPawn() == -1) {oppositeColorPawn.setValueOfPawn(Pawn.getWhitePawn());}
+		else if(this.getValueOfPawn() == 0) {oppositeColorPawn.setValueOfPawn(Pawn.getNonePawn());}
+		return oppositeColorPawn;
 	}
 }
 
