@@ -4,58 +4,41 @@ public class Board {
 	private int boardSize = 8;
 	protected Pawn[][] board = new Pawn[boardSize][boardSize];
 	
-	public Board(int boardSize) {
-		this.boardSize=boardSize;
-		this.board=Board.setStartingBoard(board);
+	public Board() {
+		for (int row=0; row<this.board.length; row++) {
+			for (int col=0;col<this.board[row].length;col++) {
+				Pawn tmp = new Pawn(0);
+				tmp.setValueOfPawn(Pawn.getNonePawn());
+				board[row][col] = tmp;
+			}
+		}
+		Pawn tmpB = new Pawn(0); //no idea why I have to separate them... if change the value of the precedent pawn if I do that.
+		Pawn tmpN = new Pawn(0);
+		tmpB.setValueOfPawn(Pawn.getWhitePawn());
+		board[3][3] = tmpB;
+		board[4][4] = tmpB;
+		tmpN.setValueOfPawn(Pawn.getBlackPawn());
+		board[3][4] = tmpN;
+		board[4][3] = tmpN;
 	}
 	public Board(int boardSize, Pawn[][] board){
 		this.boardSize=boardSize;
 		this.board=board;
 	}
-	public static Pawn[][] setStartingBoard(Pawn[][] board) {
-		for (int row=0; row<board.length; row++) {
-			for (int col=0;col<board[row].length;col++) {
-				board[row][col] = Pawn.getNonePawn();
-			}
-		}
-		board[3][3] = Pawn.getWhitePawn();
-		board[4][4] = Pawn.getWhitePawn();
-		board[3][4] = Pawn.getBlackPawn();
-		board[4][3] = Pawn.getBlackPawn();
-		return board;
-	}
-	
+
 	public Pawn[][] getBoard(){
 		return this.board;
-	}
-	
-	public static Pawn[][] setFullWhiteBoard(Pawn[][] board) {
-		for (int row=0; row<board.length; row++) {
-			for (int col=0;col<board[row].length;col++) {
-				board[row][col] = Pawn.getWhitePawn();
-			}
-		}
-		return board;
 	}
 	
 	public int getSizeBoard(){
 		return boardSize;
 	}
-	
-	public static void showStartingBoard(Board oBoard) {
-		for (int row=0; row<oBoard.board.length; row++) {
-			System.out.println("row "+row);
-			for (int col=0;col<oBoard.board[row].length;col++) {
-				System.out.println(oBoard.board[row][col].getPawnColor()); 
-			}
-		}
-	}
-	
-	public static Pawn getUniqueValue(Board board, int row, int col) {
+
+	public Pawn getUniqueValue(Board board, int row, int col) {
 		return(board.board[row][col]);
 	}
 	
-	public static void setUniqueValue(Board board, int row, int col, Pawn pawnToSet) {
+	public void setUniqueValue(Board board, int row, int col, Pawn pawnToSet) {
 		board.board[row][col]=pawnToSet;
 	}
 	
@@ -63,9 +46,12 @@ public class Board {
 		String showBoard="";
 		for (int row=0; row<board.length; row++) {
 			for (int col=0;col<board[row].length;col++) {
-				if(board[row][col].getPawnColor()==-4144960)showBoard +="grey";
-				if(board[row][col].getPawnColor()==-1)showBoard +="white";
-				if(board[row][col].getPawnColor()==-16777216)showBoard +="black";
+				showBoard += board[row][col].getValueOfPawn();
+				/*
+				if(board[row][col].getValueOfPawn()==-0)showBoard +="empty";
+				if(board[row][col].getValueOfPawn()==1)showBoard +="white";
+				if(board[row][col].getValueOfPawn()==-1)showBoard +="black";
+				*/
 				showBoard += "\t";
 			}
 			showBoard+="\n";
