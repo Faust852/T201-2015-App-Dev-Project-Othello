@@ -51,6 +51,7 @@ public class Board {
 				if(board[row][col].getValueOfPawn()==-0)showBoard +="empty";
 				if(board[row][col].getValueOfPawn()==1)showBoard +="white";
 				if(board[row][col].getValueOfPawn()==-1)showBoard +="black";
+				if(board[row][col].getValueOfPawn()==2)showBoard +="possible";
 				*/
 				showBoard += "\t";
 			}

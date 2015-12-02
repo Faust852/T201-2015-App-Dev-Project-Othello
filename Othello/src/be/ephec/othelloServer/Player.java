@@ -5,22 +5,32 @@ import java.awt.Color;
 public class Player {
 	
 	private int point;
-	private Color color;
+	private int color;
+	private String name;
 	
-	public Player(Color color) {
-		this.point = 0;
+	public Player(int color, int point, String name) {
+		this.point = point;
 		this.color = color;
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public int getPoint() {
 		return point;
 	}
 
-	public Color getColor() {
+	public int getColor() {
 		return color;
 	}
 
-	public void setColor(Color color) {
+	public void setColor(int color) {
 		this.color = color;
 	}
 
