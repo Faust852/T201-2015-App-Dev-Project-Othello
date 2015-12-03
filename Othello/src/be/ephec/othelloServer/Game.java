@@ -13,6 +13,8 @@ public class Game {
 		this.board = board;
 		this.playerOne = playerOne;
 		this.playerTwo = playerTwo;
-		this.turn = 2%turn;
+		this.turn = turn;
 	}
+	
+	
 }

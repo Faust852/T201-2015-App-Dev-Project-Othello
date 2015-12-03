@@ -3,7 +3,6 @@ package be.ephec.othelloServer;
 import java.util.Hashtable;
 
 public class GameController {
-	
 	private static final Hashtable<Integer, Integer> IndexOfRows = new Hashtable<Integer, Integer>(){
         {put(0, -1);put(1, -1);put(2, -1);put(3, 0);put(4, 0);put(5, 1);put(6, 1);put(7, 1);}
     };
@@ -28,7 +27,6 @@ public class GameController {
 			return false;
 		}
 	}
-	
 	public static boolean[] isAdjacentToOppositePawnColor(Board board,int row,int col) {
 		boolean[] arrayOfDirection ={false,false,false,false,false,false,false,false};
 			//create object with table of row and table of col
@@ -37,7 +35,6 @@ public class GameController {
 			if( (isInGrid(row+IndexOfRows.get(i), col+IndexOfCols.get(i)) 	&& 
 				(board.board[row+IndexOfRows.get(i)][col+IndexOfCols.get(i)].getValueOfPawn()	== board.board[row][col].getOppositeColorPawn().getValueOfPawn()) && 
 				(board.board[row+IndexOfRows.get(i)][col+IndexOfCols.get(i)].getValueOfPawn() 	!= 0)))	arrayOfDirection[i]=true;
-			
 		}
 		return arrayOfDirection;
 	}
@@ -59,7 +56,6 @@ public class GameController {
 				if(	isInGrid(row+IndexOfRows.get(i)+IndexOfRows.get(i), col+IndexOfCols.get(i)+IndexOfCols.get(i)) &&
 					board.board[row+IndexOfRows.get(i)+IndexOfRows.get(i)][col+IndexOfCols.get(i)+IndexOfCols.get(i)].getValueOfPawn()==currentPlayerColor){
 				}
-				
 			}
 		}
 	}
@@ -71,5 +67,10 @@ public class GameController {
 				}
 			}
 		}
+	}
+	public static void SetPawnSelected(Board board, int row, int col, Pawn pawnToSet) {
+		board.setUniqueValue(board, row, col, pawnToSet);
+	}
+	public static void flipPawn() {
 	}
 }
