@@ -19,6 +19,7 @@ import org.omg.CORBA.portable.UnknownException;
 
 import be.ephec.othelloServer.Board;
 import be.ephec.othelloServer.GameController;
+import be.ephec.othelloServer.Pawn;
 
 public class ClientInterface extends JFrame implements ActionListener {
 
@@ -32,7 +33,27 @@ public class ClientInterface extends JFrame implements ActionListener {
 	private JTextField txtIp = new JTextField();
 	private GridBagConstraints c;
 	
-	private Board board = new Board();
+	Pawn[][] bla=new Pawn[][]{
+		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0)},
+		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(1),new Pawn(0),new Pawn(0)},
+		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(-1),new Pawn(1),new Pawn(1),new Pawn(0),new Pawn(0)},
+		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(1),new Pawn(-1),new Pawn(1),new Pawn(0),new Pawn(0)},
+		{new Pawn(0),new Pawn(0),new Pawn(1),new Pawn(1),new Pawn(1),new Pawn(1),new Pawn(1),new Pawn(0)},
+		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(-1),new Pawn(1),new Pawn(1),new Pawn(-1),new Pawn(0)},
+		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0)},
+		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0)},
+	};
+	Pawn[][] bla1=new Pawn[][]{
+		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0)},
+		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(1),new Pawn(0)},
+		{new Pawn(0),new Pawn(-1),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0)},
+		{new Pawn(0),new Pawn(0),new Pawn(1),new Pawn(1),new Pawn(-1),new Pawn(1),new Pawn(1),new Pawn(0)},
+		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(-1),new Pawn(1),new Pawn(0),new Pawn(0),new Pawn(0)},
+		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0)},
+		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(-1),new Pawn(1),new Pawn(0)},
+		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0)},
+	};
+	private Board board = new Board(bla);
 
 	/**
 	 * Launch the application.
@@ -61,7 +82,7 @@ public class ClientInterface extends JFrame implements ActionListener {
 		setResizable(false);
 		contentGrid.setBorder(new EmptyBorder(10,10,10,10));
 		contentGrid.setLayout(new GridLayout(9,8));
-		
+		board.AllValidMove(new Pawn(-1));
 		for(int i = 0; i<8; i++){
 			for(int j =0; j<8; j++){
 				btn[i][j] = new JButton();
