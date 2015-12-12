@@ -7,14 +7,19 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import be.ephec.othelloServer.Board;
 import be.ephec.othelloServer.Pawn;
@@ -22,11 +27,20 @@ import be.ephec.othelloServer.Pawn;
 public class ClientInterface extends JFrame implements ActionListener {
 
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
+	private JTextField txtIp;
+	private JTextField txtPort;
+	private JTextField txtMsg;
+	private JTextArea textArea;
+	private JLabel lblIp;
+	private JLabel lblPort;
+	private JButton btnConnect;
+	private JButton btnChat;
 	
 	private JButton btn[][] = new JButton[8][8];
+	private JLabel lbl[] = new JLabel[8];
+	private JLabel lbltxt[] = new JLabel[8];
+	
+	private Client client1;
 	
 	Pawn[][] bla=new Pawn[][]{
 		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0)},
@@ -43,7 +57,7 @@ public class ClientInterface extends JFrame implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -54,13 +68,15 @@ public class ClientInterface extends JFrame implements ActionListener {
 				}
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * Create the frame.
 	 */
-	public ClientInterface() {
+	public ClientInterface(Client client1) {
+		this.client1 = client1;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
 		setBounds(100, 100, 769, 482);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -72,7 +88,7 @@ public class ClientInterface extends JFrame implements ActionListener {
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
-		JLabel lblIp = new JLabel("IP");
+		lblIp = new JLabel("IP");
 		GridBagConstraints gbc_lblIp = new GridBagConstraints();
 		gbc_lblIp.insets = new Insets(0, 0, 5, 5);
 		gbc_lblIp.gridx = 13;
@@ -80,98 +96,35 @@ public class ClientInterface extends JFrame implements ActionListener {
 		contentPane.add(lblIp, gbc_lblIp);
 		
 		
-		textField = new JTextField();
+		txtIp = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.gridwidth = 5;
 		gbc_textField.insets = new Insets(0, 0, 5, 0);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 14;
 		gbc_textField.gridy = 0;
-		contentPane.add(textField, gbc_textField);
-		textField.setColumns(10);
+		contentPane.add(txtIp, gbc_textField);
+		txtIp.setColumns(10);
 		
-		JLabel lblA = new JLabel("A");
-		GridBagConstraints gbc_lblA = new GridBagConstraints();
-		gbc_lblA.insets = new Insets(0, 0, 5, 5);
-		gbc_lblA.gridx = 3;
-		gbc_lblA.gridy = 1;
-		contentPane.add(lblA, gbc_lblA);
-		
-		JLabel lblB = new JLabel("B");
-		GridBagConstraints gbc_lblB = new GridBagConstraints();
-		gbc_lblB.insets = new Insets(0, 0, 5, 5);
-		gbc_lblB.gridx = 4;
-		gbc_lblB.gridy = 1;
-		contentPane.add(lblB, gbc_lblB);
-		
-		JLabel lblC = new JLabel("C");
-		GridBagConstraints gbc_lblC = new GridBagConstraints();
-		gbc_lblC.insets = new Insets(0, 0, 5, 5);
-		gbc_lblC.gridx = 5;
-		gbc_lblC.gridy = 1;
-		contentPane.add(lblC, gbc_lblC);
-		
-		JLabel lblD = new JLabel("D");
-		GridBagConstraints gbc_lblD = new GridBagConstraints();
-		gbc_lblD.insets = new Insets(0, 0, 5, 5);
-		gbc_lblD.gridx = 6;
-		gbc_lblD.gridy = 1;
-		contentPane.add(lblD, gbc_lblD);
-		
-		JLabel lblE = new JLabel("E");
-		GridBagConstraints gbc_lblE = new GridBagConstraints();
-		gbc_lblE.insets = new Insets(0, 0, 5, 5);
-		gbc_lblE.gridx = 7;
-		gbc_lblE.gridy = 1;
-		contentPane.add(lblE, gbc_lblE);
-		
-		JLabel lblF = new JLabel("F");
-		GridBagConstraints gbc_lblF = new GridBagConstraints();
-		gbc_lblF.insets = new Insets(0, 0, 5, 5);
-		gbc_lblF.gridx = 8;
-		gbc_lblF.gridy = 1;
-		contentPane.add(lblF, gbc_lblF);
-		
-		JLabel lblG = new JLabel("G");
-		GridBagConstraints gbc_lblG = new GridBagConstraints();
-		gbc_lblG.insets = new Insets(0, 0, 5, 5);
-		gbc_lblG.gridx = 9;
-		gbc_lblG.gridy = 1;
-		contentPane.add(lblG, gbc_lblG);
-		
-		JLabel lblH = new JLabel("H");
-		GridBagConstraints gbc_lblH = new GridBagConstraints();
-		gbc_lblH.insets = new Insets(0, 0, 5, 5);
-		gbc_lblH.gridx = 10;
-		gbc_lblH.gridy = 1;
-		contentPane.add(lblH, gbc_lblH);
-		
-		JLabel lblPort = new JLabel("Port");
+		lblPort = new JLabel("Port");
 		GridBagConstraints gbc_lblPort = new GridBagConstraints();
 		gbc_lblPort.insets = new Insets(0, 0, 5, 5);
 		gbc_lblPort.gridx = 13;
 		gbc_lblPort.gridy = 1;
 		contentPane.add(lblPort, gbc_lblPort);
 		
-		textField_1 = new JTextField();
+		txtPort = new JTextField();
 		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
 		gbc_textField_1.insets = new Insets(0, 0, 5, 0);
 		gbc_textField_1.gridwidth = 5;
 		gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_1.gridx = 14;
 		gbc_textField_1.gridy = 1;
-		contentPane.add(textField_1, gbc_textField_1);
-		textField_1.setColumns(10);
+		contentPane.add(txtPort, gbc_textField_1);
+		txtPort.setColumns(10);
 		
-		JLabel label = new JLabel("1");
-		GridBagConstraints gbc_label = new GridBagConstraints();
-		gbc_label.anchor = GridBagConstraints.EAST;
-		gbc_label.insets = new Insets(0, 0, 5, 5);
-		gbc_label.gridx = 2;
-		gbc_label.gridy = 2;
-		contentPane.add(label, gbc_label);
-		
-		JButton btnConnect = new JButton("Connect");
+		btnConnect = new JButton("Connect");
+		btnConnect.addActionListener(this);
 		GridBagConstraints gbc_btnConnect = new GridBagConstraints();
 		gbc_btnConnect.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnConnect.insets = new Insets(0, 0, 5, 0);
@@ -180,87 +133,67 @@ public class ClientInterface extends JFrame implements ActionListener {
 		gbc_btnConnect.gridy = 2;
 		contentPane.add(btnConnect, gbc_btnConnect);
 		
-		JLabel label_1 = new JLabel("2");
-		GridBagConstraints gbc_label_1 = new GridBagConstraints();
-		gbc_label_1.anchor = GridBagConstraints.EAST;
-		gbc_label_1.insets = new Insets(0, 0, 5, 5);
-		gbc_label_1.gridx = 2;
-		gbc_label_1.gridy = 3;
-		contentPane.add(label_1, gbc_label_1);
+		JScrollPane scrollPane = new JScrollPane();
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.gridwidth = 6;
+		gbc_scrollPane.gridheight = 7;
+		gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
+		gbc_scrollPane.gridx = 13;
+		gbc_scrollPane.gridy = 3;
+		contentPane.add(scrollPane, gbc_scrollPane);
 		
-		JTextArea textArea = new JTextArea();
-		GridBagConstraints gbc_textArea = new GridBagConstraints();
-		gbc_textArea.insets = new Insets(0, 0, 5, 0);
-		gbc_textArea.gridheight = 7;
-		gbc_textArea.gridwidth = 6;
-		gbc_textArea.fill = GridBagConstraints.BOTH;
-		gbc_textArea.gridx = 13;
-		gbc_textArea.gridy = 3;
-		contentPane.add(textArea, gbc_textArea);
+		textArea = new JTextArea();
+		textArea.setEditable(false);
+		textArea.setBorder(new LineBorder(Color.BLACK));
+		scrollPane.setViewportView(textArea);
 		
-		JLabel label_2 = new JLabel("3");
-		GridBagConstraints gbc_label_2 = new GridBagConstraints();
-		gbc_label_2.anchor = GridBagConstraints.EAST;
-		gbc_label_2.insets = new Insets(0, 0, 5, 5);
-		gbc_label_2.gridx = 2;
-		gbc_label_2.gridy = 4;
-		contentPane.add(label_2, gbc_label_2);
+		txtMsg = new JTextField();
+		GridBagConstraints gbc_txtMsg = new GridBagConstraints();
+		gbc_txtMsg.gridwidth = 5;
+		gbc_txtMsg.insets = new Insets(0, 0, 0, 5);
+		gbc_txtMsg.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtMsg.gridx = 13;
+		gbc_txtMsg.gridy = 10;
+		contentPane.add(txtMsg, gbc_txtMsg);
+		txtMsg.setColumns(10);
 		
-		JLabel label_3 = new JLabel("4");
-		GridBagConstraints gbc_label_3 = new GridBagConstraints();
-		gbc_label_3.anchor = GridBagConstraints.EAST;
-		gbc_label_3.insets = new Insets(0, 0, 5, 5);
-		gbc_label_3.gridx = 2;
-		gbc_label_3.gridy = 5;
-		contentPane.add(label_3, gbc_label_3);
-		
-		JLabel label_4 = new JLabel("5");
-		GridBagConstraints gbc_label_4 = new GridBagConstraints();
-		gbc_label_4.anchor = GridBagConstraints.EAST;
-		gbc_label_4.insets = new Insets(0, 0, 5, 5);
-		gbc_label_4.gridx = 2;
-		gbc_label_4.gridy = 6;
-		contentPane.add(label_4, gbc_label_4);
-		
-		JLabel label_5 = new JLabel("6");
-		GridBagConstraints gbc_label_5 = new GridBagConstraints();
-		gbc_label_5.anchor = GridBagConstraints.EAST;
-		gbc_label_5.insets = new Insets(0, 0, 5, 5);
-		gbc_label_5.gridx = 2;
-		gbc_label_5.gridy = 7;
-		contentPane.add(label_5, gbc_label_5);
-		
-		JLabel label_6 = new JLabel("7");
-		GridBagConstraints gbc_label_6 = new GridBagConstraints();
-		gbc_label_6.anchor = GridBagConstraints.EAST;
-		gbc_label_6.insets = new Insets(0, 0, 5, 5);
-		gbc_label_6.gridx = 2;
-		gbc_label_6.gridy = 8;
-		contentPane.add(label_6, gbc_label_6);
-		
-		JLabel label_7 = new JLabel("8");
-		GridBagConstraints gbc_label_7 = new GridBagConstraints();
-		gbc_label_7.anchor = GridBagConstraints.EAST;
-		gbc_label_7.insets = new Insets(0, 0, 5, 5);
-		gbc_label_7.gridx = 2;
-		gbc_label_7.gridy = 9;
-		contentPane.add(label_7, gbc_label_7);
-		
-		textField_2 = new JTextField();
-		GridBagConstraints gbc_textField_2 = new GridBagConstraints();
-		gbc_textField_2.gridwidth = 5;
-		gbc_textField_2.insets = new Insets(0, 0, 0, 5);
-		gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_2.gridx = 13;
-		gbc_textField_2.gridy = 10;
-		contentPane.add(textField_2, gbc_textField_2);
-		textField_2.setColumns(10);
-		
-		JButton btnChat = new JButton("Chat");
+		btnChat = new JButton("Chat");
 		GridBagConstraints gbc_btnChat = new GridBagConstraints();
+		btnChat.addActionListener(this);
 		gbc_btnChat.gridx = 18;
 		gbc_btnChat.gridy = 10;
 		contentPane.add(btnChat, gbc_btnChat);
+		
+		for(int i = 0; i<8; i++){
+			lbltxt[i] = new JLabel();
+			GridBagConstraints gbc_lbltxt = new GridBagConstraints();
+			gbc_lbltxt.insets = new Insets(0, 0, 5, 5);
+			gbc_lbltxt.gridx = i+3;
+			gbc_lbltxt.gridy = 1;
+			contentPane.add(lbltxt[i], gbc_lbltxt);
+		}
+		
+		lbltxt[0].setText("A");
+		lbltxt[1].setText("B");
+		lbltxt[2].setText("C");
+		lbltxt[3].setText("D");
+		lbltxt[4].setText("E");
+		lbltxt[5].setText("F");
+		lbltxt[6].setText("G");
+		lbltxt[7].setText("H");
+		
+		
+		for(int i = 0; i<8; i++){
+			lbl[i] = new JLabel();
+			lbl[i].setText(""+(i+1));
+			GridBagConstraints gbc_lbl = new GridBagConstraints();
+			gbc_lbl.anchor = GridBagConstraints.EAST;
+			gbc_lbl.insets = new Insets(0, 0, 5, 5);
+			gbc_lbl.gridx = 2;
+			gbc_lbl.gridy = i+2;
+			contentPane.add(lbl[i], gbc_lbl);
+		}
 		
 		for(int i = 3; i<11; i++){
 			for(int j =2; j<10; j++){
@@ -291,7 +224,7 @@ public class ClientInterface extends JFrame implements ActionListener {
 					gbc_btn.fill = GridBagConstraints.BOTH;
 				}
 				btn[i-3][j-2].addActionListener(this);
-				btn[i-3][j-2].setName("" + i + "," + j);
+				btn[i-3][j-2].setName("" + (i-3) + "," + (j-2));
 				btn[i-3][j-2].setSize(5, 5);
 				contentPane.add(btn[i-3][j-2],gbc_btn);
 			}
@@ -300,8 +233,40 @@ public class ClientInterface extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		String position = ((JButton)e.getSource()).getName();
 		
+		switch(e.getActionCommand()){
+		case "Connect" : ClientSocket client;
+			try {
+				client = new ClientSocket(txtIp.getText(), Integer.parseInt(txtPort.getText()), client1);
+				client.lireNonStop();
+			
+				client1.setSocket(client);
+				client1.connexionSuccess();
+			} catch (NumberFormatException e1) {
+				e1.printStackTrace();
+			} catch (UnknownHostException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				ajouteDuChat("Le serveur ne répond pas. Essayez plus tard.");
+			}
+			break;
+		case "Chat" : client1.sendObject(txtMsg.getText());
+					ajouteDuChat(txtMsg.getText());
+					break;
+		default: client1.sendObject(position);
+		this.ajouteDuChat(position);
+		}
+		
+		int nbClient = client1.getNbClients(); 
+		if(nbClient == 1){
+			btnConnect.setEnabled(false);
+		}
+	}
+	
+	public void ajouteDuChat(String s){
+		textArea.append(Console.getInviteDeCommande()+ s +"\n");
+		textArea.setCaretPosition(textArea.getText().length());
 	}
 
 }

@@ -2,17 +2,38 @@ package be.ephec.othelloServer;
 
 import java.util.Hashtable;
 
+/**
+ * @author David Micciche
+ * @version 0.0
+ * Main logic class, this class handle things like moves, flipping pawns, check if a move is possible...
+ *
+ */
 public class Board {
 	private int boardSize = 8;
 	protected Pawn[][] board = new Pawn[boardSize][boardSize];
-	
+	/**
+	 * Array of direction of x axis, allowing us to get the right direction from a given starting point.
+	 * format :
+	 * 0 1 2
+	 * 3 X 4
+	 * 5 6 7
+	 */
 	private static final Hashtable<Integer, Integer> IndexOfRows = new Hashtable<Integer, Integer>(){
         {put(0, -1);put(1, -1);put(2, -1);put(3, 0);put(4, 0);put(5, 1);put(6, 1);put(7, 1);}
     };
+	/**
+	 * Array of direction of x axis, allowing us to get the right direction from a given starting point.
+	 * format :
+	 * 0 1 2
+	 * 3 X 4
+	 * 5 6 7
+	 */
 	private static final Hashtable<Integer, Integer> IndexOfCols = new Hashtable<Integer, Integer>(){
         {put(0, -1);put(1, 0);put(2, 1);put(3, -1);put(4, 1);put(5, -1);put(6, 0);put(7, 1);}
     };
-	
+	/**
+	 * Main constructor, start with an initial board where the center pawns are already set.
+	 */
 	public Board() {
 		for (int row=0; row<this.board.length; row++) {
 			for (int col=0;col<this.board[row].length;col++) {
@@ -30,49 +51,67 @@ public class Board {
 		board[3][4] = tmpN;
 		board[4][3] = tmpN;
 	}
+	/**
+	 * Constructor from a already given board (might be used for loading a save for instance).
+	 * @param board
+	 */
 	public Board(Pawn[][] board){
 		this.board=board;
 	}
-
+	/**
+	 * return the board on his Pawn[][] format
+	 * @return Pawn[][]
+	 */
 	public Pawn[][] getBoard(){
 		return this.board;
 	}
-	
 	public int getSizeBoard(){
 		return boardSize;
 	}
-
+	/**
+	 * This method check wether a coordinate is inside the board or not, prevent OutOfBound error.
+	 * @param row, x axis
+	 * @param col, y axis
+	 * @return true if a case is in the board, return false if not
+	 */
 	public boolean isInGrid(int row, int col) {
 		try {
 			if(row < 0 || col < 0) {return false;}
 		    if(row > 7 || col > 7) {return false;}
 		    return true;
-		}catch(Exception e){
+		}catch(Exception e){ //if outOfBound, return false
 			return false;
 		}
 	}
+	/**
+	 * This method check wether a case has opposite pawns beside it. If it does, set its coordinate to true (to utilise alongside the arrays of direction).
+	 * @param row
+	 * @param col
+	 * @param currentPawnColor, color of current player
+	 * @return boolean[] arrayOfDirection where true is the direction of a pawn of different color direcly siding it. false if not
+	 * format :
+	 * 0 1 2
+	 * 3 X 4
+	 * 5 6 7
+	 */
 	public boolean[] isAdjacentToOppositePawnColor(int row,int col, Pawn currentPawnColor) {
 		boolean[] arrayOfDirection ={false,false,false,false,false,false,false,false};
-			//create object with table of row and table of col
-		  //si isInGrid						la valeur du pion dans la case adjacente 	== la valeur opposée du pion de cette même case						  la valeur du pion de la case adjacente != de vide
 		for (int i=0;i<=7;i++){
-			if( (isInGrid(row+IndexOfRows.get(i), col+IndexOfCols.get(i)) 	&& 
-				this.getBoard()[row+IndexOfRows.get(i)][col+IndexOfCols.get(i)].getValueOfPawn() == currentPawnColor.getOppositeColorPawn().getValueOfPawn() &&
-				this.getBoard()[row][col].getValueOfPawn() == 0))	arrayOfDirection[i]=true;
+			if( (isInGrid(row+IndexOfRows.get(i), col+IndexOfCols.get(i)) 	&&  //If (row,col) is inbound of the board
+				this.getBoard()[row+IndexOfRows.get(i)][col+IndexOfCols.get(i)].getValueOfPawn() == currentPawnColor.getOppositeColorPawn().getValueOfPawn() && //If has opposite pawn color around this (row,col)
+				this.getBoard()[row][col].getValueOfPawn() == 0))	arrayOfDirection[i]=true; //  if (row,col) is empty case
 		}
 		return arrayOfDirection;
 	}
-	
-	public String getDirectionFromBooleanArray(boolean[] arrayOfDirection){
-		String s="";
-		for (int i=0; i<arrayOfDirection.length;i++) {
-			s+=arrayOfDirection[i]+"\t";
-		}
-		return s;
-	}
-	
-	public boolean isPossibleMove(int row, int col, Pawn pawnToSet){
-		boolean[] arrayOfDirection=this.isAdjacentToOppositePawnColor(row, col, pawnToSet);
+	/**
+	 * This method check if you can put a pawn in a given coordinate by looking on the offset of a direction and meeting the right criteria
+	 * @param row
+	 * @param col
+	 * @param currentPawnColor
+	 * @return true if you can put a pawn in the coordinate
+	 */
+	public boolean isPossibleMove(int row, int col, Pawn currentPawnColor){
+		boolean[] arrayOfDirection=this.isAdjacentToOppositePawnColor(row, col, currentPawnColor);
 		boolean isValid = false;
 		for(int i=0;i<=7;i++){
 			if(arrayOfDirection[i] == true){
@@ -80,10 +119,10 @@ public class Board {
 				int offsetCol = col+(IndexOfCols.get(i));
 				boolean hasOppPieceBetween = false;
 				while(isInGrid(offsetRow,offsetCol)){
-					if(this.getBoard()[offsetRow][offsetCol].getValueOfPawn()==pawnToSet.getOppositeColorPawn().getValueOfPawn()){
+					if(this.getBoard()[offsetRow][offsetCol].getValueOfPawn()==currentPawnColor.getOppositeColorPawn().getValueOfPawn()){
 						hasOppPieceBetween=true;
 					}
-					else if (this.getBoard()[offsetRow][offsetCol].getValueOfPawn()==pawnToSet.getValueOfPawn() && hasOppPieceBetween) {
+					else if (this.getBoard()[offsetRow][offsetCol].getValueOfPawn()==currentPawnColor.getValueOfPawn() && hasOppPieceBetween) {
 						isValid = true;
 						break;
 					}
@@ -96,8 +135,13 @@ public class Board {
 				return isValid;
 		}
 		return isValid;
-		
 	}
+	/**
+	 * This method flip the opposite pawn color between to pawn of current color
+	 * @param row
+	 * @param col
+	 * @param pawnToSet
+	 */
 	public void flipPawn(int row, int col, Pawn pawnToSet) {
 		if(this.getBoard()[row][col].getValueOfPawn()==Pawn.getPossiblePawn()){
 			this.getBoard()[row][col].setValueOfPawn(0);
@@ -126,16 +170,18 @@ public class Board {
 							this.getBoard()[offsetRow][offsetCol].setValueOfPawn(pawnToSet.getValueOfPawn());
 							offsetRow+=(IndexOfRows.get(i));
 							offsetCol+=(IndexOfCols.get(i));
+						}
 					}
 				}
 			}
-		}
-		}
-		
+		}	
 	}
-	
+	/**
+	 * This method will highlight all valid move a player can do on his turn
+	 * @param currentColor
+	 */
 	public void AllValidMove(Pawn currentColor) {
-		//suppression des cases possibles a chaque début pour eviter les redondances
+		//remove all previous highlight to avoid non possible move being still highlighted
 		for(int i=0;i<=7;i++){
 			for (int j=0;j<=7;j++) {
 				if (this.getBoard()[i][j].getValueOfPawn()==Pawn.getPossiblePawn()) this.getBoard()[i][j].setValueOfPawn(Pawn.getNonePawn());
@@ -149,7 +195,33 @@ public class Board {
 			}
 		}
 	}
-
+	/**
+	 * @param currentPlayer
+	 * @return
+	 */
+	public int PointCounter(Pawn currentPlayer) {
+		int counter = 0;
+		for(int i=0;i<=7;i++){
+			for (int j=0;j<=7;j++) {
+				if (this.getBoard()[i][j].getValueOfPawn()==currentPlayer.getValueOfPawn()){counter++;}
+			}
+		}
+		return counter;
+	}
+	/**
+	 * @param arrayOfDirection
+	 * @return simply print the arrayOfDirection
+	 */
+	public String getDirectionFromBooleanArray(boolean[] arrayOfDirection){
+		String s="";
+		for (int i=0; i<arrayOfDirection.length;i++) {
+			s+=arrayOfDirection[i]+"\t";
+		}
+		return s;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		String showBoard="";
 		for (int row=0; row<board.length; row++) {
