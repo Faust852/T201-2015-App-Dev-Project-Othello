@@ -52,7 +52,7 @@ public class ClientInterface extends JFrame implements ActionListener {
 		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0)},
 		{new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0),new Pawn(0)},
 	};
-	private Board board = new Board(bla);
+	private Board board = new Board();
 
 	/**
 	 * Launch the application.

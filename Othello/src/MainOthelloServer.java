@@ -30,10 +30,11 @@ public class MainOthelloServer {
 		};
 		
 		Board board2 = new Board(bla);
-		board2.AllValidMove(new Pawn(-1));
+		
 		System.out.println(board2);
-		board2.flipPawn(2, 6, new Pawn(-1));
-		System.out.println(board2);
+		boolean[] arrayOfDirection=board.isAdjacentToOppositePawnColor(2, 3, new Pawn(1));
+		System.out.println(board.getDirectionFromBooleanArray(arrayOfDirection));
+
 
 
 	}
