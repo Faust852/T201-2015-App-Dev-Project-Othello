@@ -1,4 +1,4 @@
-package be.ephec.othello.local;
+package be.ephec.othello.models;
 
 /**
  * @author David Micciche

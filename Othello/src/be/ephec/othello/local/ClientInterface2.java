@@ -8,7 +8,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Hashtable;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -20,6 +19,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import be.ephec.othello.models.Board;
+import be.ephec.othello.models.Pawn;
+import be.ephec.othello.network.ChatMessage;
+import be.ephec.othello.network.Client;
 
 public class ClientInterface2 extends JFrame implements ActionListener {
 
@@ -81,15 +85,15 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 	public ClientInterface2() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(true);
-		setBounds(100, 100, 1146, 543);
+		setBounds(100, 100, 1084, 596);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 45, 11, 45, 45, 45, 45, 45, 45, 45, 45, 0, 53, 45, 45, 45, 45, 41, 45, 30, 45, 0, 45, 0, 0, 45, 45, 0};
-		gbl_contentPane.rowHeights = new int[]{0, 0, 45, 45, 45, 45, 45, 45, 45, 45, 45, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWidths = new int[]{0, 45, 11, 45, 45, 45, 45, 45, 45, 45, 45, 0, 53, 45, 45, 45, 45, 41, 45, 45, 45, 45, 45, 45, 0};
+		gbl_contentPane.rowHeights = new int[]{45, 0, 0, 45, 45, 45, 45, 45, 45, 45, 45, 45, 0};
+		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 			
 		JButton btnNewGame = new JButton("New Game");
@@ -98,18 +102,18 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		lblIp = new JLabel("IP");
 		GridBagConstraints gbc_lblIp = new GridBagConstraints();
 		gbc_lblIp.insets = new Insets(0, 0, 5, 5);
-		gbc_lblIp.gridx = 22;
-		gbc_lblIp.gridy = 1;
+		gbc_lblIp.gridx = 19;
+		gbc_lblIp.gridy = 2;
 		contentPane.add(lblIp, gbc_lblIp);
 		
 		txtIp = new JTextField();
 		txtIp.setText("localhost");
 		GridBagConstraints gbc_txtIp = new GridBagConstraints();
+		gbc_txtIp.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtIp.gridwidth = 3;
 		gbc_txtIp.insets = new Insets(0, 0, 5, 5);
-		gbc_txtIp.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtIp.gridx = 23;
-		gbc_txtIp.gridy = 1;
+		gbc_txtIp.gridx = 20;
+		gbc_txtIp.gridy = 2;
 		contentPane.add(txtIp, gbc_txtIp);
 		txtIp.setColumns(10);
 		GridBagConstraints gbc_btnNewGame = new GridBagConstraints();
@@ -117,7 +121,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_btnNewGame.gridwidth = 5;
 		gbc_btnNewGame.insets = new Insets(0, 0, 5, 5);
 		gbc_btnNewGame.gridx = 13;
-		gbc_btnNewGame.gridy = 2;
+		gbc_btnNewGame.gridy = 3;
 		contentPane.add(btnNewGame, gbc_btnNewGame);
 		
 		btnPlayAgainstIa = new JButton("Play Against IA");
@@ -126,18 +130,18 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		lblPort = new JLabel("Port");
 		GridBagConstraints gbc_lblPort = new GridBagConstraints();
 		gbc_lblPort.insets = new Insets(0, 0, 5, 5);
-		gbc_lblPort.gridx = 22;
-		gbc_lblPort.gridy = 2;
+		gbc_lblPort.gridx = 19;
+		gbc_lblPort.gridy = 3;
 		contentPane.add(lblPort, gbc_lblPort);
 		
 		portField = new JTextField();
 		portField.setText("1500");
 		GridBagConstraints gbc_portField = new GridBagConstraints();
+		gbc_portField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_portField.gridwidth = 2;
 		gbc_portField.insets = new Insets(0, 0, 5, 5);
-		gbc_portField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_portField.gridx = 23;
-		gbc_portField.gridy = 2;
+		gbc_portField.gridx = 20;
+		gbc_portField.gridy = 3;
 		contentPane.add(portField, gbc_portField);
 		portField.setColumns(10);
 		
@@ -145,25 +149,25 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		btnConnect.addActionListener(this);
 		GridBagConstraints gbc_btnConnect = new GridBagConstraints();
 		gbc_btnConnect.insets = new Insets(0, 0, 5, 5);
-		gbc_btnConnect.gridx = 25;
-		gbc_btnConnect.gridy = 2;
+		gbc_btnConnect.gridx = 22;
+		gbc_btnConnect.gridy = 3;
 		contentPane.add(btnConnect, gbc_btnConnect);
 		
 		lblName = new JLabel("Name");
 		GridBagConstraints gbc_lblName = new GridBagConstraints();
 		gbc_lblName.insets = new Insets(0, 0, 5, 5);
 		gbc_lblName.anchor = GridBagConstraints.EAST;
-		gbc_lblName.gridx = 22;
-		gbc_lblName.gridy = 3;
+		gbc_lblName.gridx = 19;
+		gbc_lblName.gridy = 4;
 		contentPane.add(lblName, gbc_lblName);
 		
 		textField_2 = new JTextField();
 		GridBagConstraints gbc_textField_2 = new GridBagConstraints();
+		gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_2.gridwidth = 3;
 		gbc_textField_2.insets = new Insets(0, 0, 5, 5);
-		gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_2.gridx = 23;
-		gbc_textField_2.gridy = 3;
+		gbc_textField_2.gridx = 20;
+		gbc_textField_2.gridy = 4;
 		contentPane.add(textField_2, gbc_textField_2);
 		textField_2.setColumns(10);
 		GridBagConstraints gbc_btnPlayAgainstIa = new GridBagConstraints();
@@ -171,18 +175,19 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_btnPlayAgainstIa.gridwidth = 5;
 		gbc_btnPlayAgainstIa.insets = new Insets(0, 0, 5, 5);
 		gbc_btnPlayAgainstIa.gridx = 13;
-		gbc_btnPlayAgainstIa.gridy = 4;
+		gbc_btnPlayAgainstIa.gridy = 5;
 		contentPane.add(btnPlayAgainstIa, gbc_btnPlayAgainstIa);
 		
 		textArea = new JTextArea();
 		GridBagConstraints gbc_textArea = new GridBagConstraints();
 		textArea.setEditable(false);
+		textArea.setLineWrap(true);
 		gbc_textArea.gridheight = 6;
 		gbc_textArea.gridwidth = 4;
 		gbc_textArea.insets = new Insets(0, 0, 5, 5);
 		gbc_textArea.fill = GridBagConstraints.BOTH;
-		gbc_textArea.gridx = 22;
-		gbc_textArea.gridy = 4;
+		gbc_textArea.gridx = 19;
+		gbc_textArea.gridy = 5;
 		contentPane.add(textArea, gbc_textArea);
 		
 		JLabel lblScore = new JLabel("Score :");
@@ -190,7 +195,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_lblScore.gridwidth = 4;
 		gbc_lblScore.insets = new Insets(0, 0, 5, 5);
 		gbc_lblScore.gridx = 13;
-		gbc_lblScore.gridy = 6;
+		gbc_lblScore.gridy = 7;
 		contentPane.add(lblScore, gbc_lblScore);
 		
 		JLabel lblWhite = new JLabel("White");
@@ -198,7 +203,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_lblWhite.gridwidth = 2;
 		gbc_lblWhite.insets = new Insets(0, 0, 5, 5);
 		gbc_lblWhite.gridx = 13;
-		gbc_lblWhite.gridy = 7;
+		gbc_lblWhite.gridy = 8;
 		contentPane.add(lblWhite, gbc_lblWhite);
 		
 		whiteScore = new JTextField();
@@ -208,7 +213,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_whiteScore.insets = new Insets(0, 0, 5, 5);
 		gbc_whiteScore.fill = GridBagConstraints.HORIZONTAL;
 		gbc_whiteScore.gridx = 15;
-		gbc_whiteScore.gridy = 7;
+		gbc_whiteScore.gridy = 8;
 		contentPane.add(whiteScore, gbc_whiteScore);
 		whiteScore.setColumns(10);
 		
@@ -217,7 +222,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_lblBlack.gridwidth = 2;
 		gbc_lblBlack.insets = new Insets(0, 0, 5, 5);
 		gbc_lblBlack.gridx = 13;
-		gbc_lblBlack.gridy = 8;
+		gbc_lblBlack.gridy = 9;
 		contentPane.add(lblBlack, gbc_lblBlack);
 		
 		blackScore = new JTextField();
@@ -227,7 +232,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_blackScore.insets = new Insets(0, 0, 5, 5);
 		gbc_blackScore.fill = GridBagConstraints.HORIZONTAL;
 		gbc_blackScore.gridx = 15;
-		gbc_blackScore.gridy = 8;
+		gbc_blackScore.gridy = 9;
 		contentPane.add(blackScore, gbc_blackScore);
 		blackScore.setColumns(10);
 		
@@ -235,9 +240,9 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
 		gbc_textField_1.gridwidth = 4;
 		gbc_textField_1.insets = new Insets(0, 0, 5, 5);
-		gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_1.gridx = 22;
-		gbc_textField_1.gridy = 9;
+		gbc_textField_1.fill = GridBagConstraints.BOTH;
+		gbc_textField_1.gridx = 19;
+		gbc_textField_1.gridy = 10;
 		contentPane.add(tf, gbc_textField_1);
 		tf.setColumns(10);
 		
@@ -246,21 +251,21 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_errMsg.fill = GridBagConstraints.BOTH;
 		gbc_errMsg.insets = new Insets(0, 0, 5, 5);
 		gbc_errMsg.gridx = 15;
-		gbc_errMsg.gridy = 9;
+		gbc_errMsg.gridy = 10;
 		contentPane.add(errMsg, gbc_errMsg);
 		
 		JLabel lblTurn = new JLabel("Turn :");
 		GridBagConstraints gbc_lblTurn = new GridBagConstraints();
 		gbc_lblTurn.insets = new Insets(0, 0, 0, 5);
 		gbc_lblTurn.gridx = 3;
-		gbc_lblTurn.gridy = 10;
+		gbc_lblTurn.gridy = 11;
 		contentPane.add(lblTurn, gbc_lblTurn);
 		
 		turn = new JLabel("Black");
 		GridBagConstraints gbc_turn = new GridBagConstraints();
 		gbc_turn.insets = new Insets(0, 0, 0, 5);
 		gbc_turn.gridx = 4;
-		gbc_turn.gridy = 10;
+		gbc_turn.gridy = 11;
 		contentPane.add(turn, gbc_turn);
 		
 		btnHelp = new JButton("Help ?");
@@ -270,7 +275,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_btnHelp.gridwidth = 3;
 		gbc_btnHelp.insets = new Insets(0, 0, 0, 5);
 		gbc_btnHelp.gridx = 6;
-		gbc_btnHelp.gridy = 10;
+		gbc_btnHelp.gridy = 11;
 		contentPane.add(btnHelp, gbc_btnHelp);
 		
 		chat = new JTextField();
@@ -278,8 +283,8 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_textField_3.gridwidth = 3;
 		gbc_textField_3.insets = new Insets(0, 0, 0, 5);
 		gbc_textField_3.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_3.gridx = 22;
-		gbc_textField_3.gridy = 10;
+		gbc_textField_3.gridx = 19;
+		gbc_textField_3.gridy = 11;
 		contentPane.add(chat, gbc_textField_3);
 		chat.setColumns(10);
 		
@@ -287,8 +292,8 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		btnChat.addActionListener(this);
 		GridBagConstraints gbc_btnChat = new GridBagConstraints();
 		gbc_btnChat.insets = new Insets(0, 0, 0, 5);
-		gbc_btnChat.gridx = 25;
-		gbc_btnChat.gridy = 10;
+		gbc_btnChat.gridx = 22;
+		gbc_btnChat.gridy = 11;
 		contentPane.add(btnChat, gbc_btnChat);
 		
 		for(int i = 0; i<8; i++){
@@ -334,10 +339,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 	public void ActionPlayer(Board board, Pawn player, int[] coordonnee) {
 		board.flipPawn(coordonnee[0], coordonnee[1], player);
 		board.AllValidMove(player);
-		clearBoard(board);
-		updateBoard(board);
-		updatePlayerTurn();
-		updateScore();
+		refreshAll(board,contentPane);
 	}
 	
 	public void refreshBoard(JPanel contentPane){
@@ -372,12 +374,11 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		}
 		switch (e.getActionCommand()) {
 			case "Connect": 
-				String username = tf.getText().trim();
-				//if(username.length() == 0) break;System.out.println("1");
+				String username = textField_2.getText();
+				if (username.length()==0) textField_2.setText("Anonymous");
+				username = textField_2.getText().trim();
 				String server = txtIp.getText().trim();
-			//	if(server.length() == 0) break;System.out.println("2");
 				String portNumber = portField.getText().trim();
-			//	if(portNumber.length() == 0)break;System.out.println("3");
 				int port = 0;
 				try {
 					port = Integer.parseInt(portNumber);
@@ -387,8 +388,8 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 				}
 				client = new Client(server, port, username, this);
 				if(!client.start()) break;
-				tf.setEditable(false);
 				connected = true;
+				textField_2.setEditable(false);
 				btnConnect.setEnabled(false);
 				txtIp.setEditable(false);
 				portField.setEditable(false);
@@ -398,21 +399,15 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 				iaBool = false;
 				turnLeft = 60;
 				board = new Board();
-				clearBoard(board);
-				updateBoard(board);
-				updateScore();
+				refreshAll(board,contentPane);
 				turn.setText("Black");
-				refreshBoard(contentPane);
 				break;
 			case "Play Against IA" :
 				iaBool = true;
 				turnLeft = 60;
 				board = new Board();
-				clearBoard(board);
-				updateBoard(board);
-				updateScore();
 				turn.setText("Black");
-				refreshBoard(contentPane);
+				refreshAll(board,contentPane);
 				break;
 			case "Help ?" :
 				if(turnLeft%2 == 0 && turnLeft != 0) {
@@ -436,9 +431,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 					updateBoard(board);
 					if (board.getBoard()[coordonnee[0]][coordonnee[1]].getValueOfPawn()==Pawn.getPossiblePawn()) {
 						ActionPlayer(board, new Pawn(-1), coordonnee);
-						clearBoard(board);
-						updateBoard(board);
-						refreshBoard(contentPane);
+						refreshAll(board,contentPane);
 						errMsg.setText("");
 						turnLeft--;
 					}
@@ -454,9 +447,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 					updateBoard(board);
 					if (board.getBoard()[coordonnee[0]][coordonnee[1]].getValueOfPawn()==Pawn.getPossiblePawn()) {
 						ActionPlayer(board, new Pawn(1), coordonnee);
-						clearBoard(board);
-						updateBoard(board);
-						refreshBoard(contentPane);
+						refreshAll(board,contentPane);
 						errMsg.setText("");
 						turnLeft--;
 					}
@@ -479,31 +470,23 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 									if (board.getBoard()[i][j].getValueOfPawn()==Pawn.getPossiblePawn()) {
 										board.flipPawn(i, j, new Pawn(1));
 										turnLeft--;
-										updateScore();
-										updatePlayerTurn();
 										break search;
 									}
 								}
 							}
 						}
-						clearBoard(board);
-						updateBoard(board);
-						refreshBoard(contentPane);
+						refreshAll(board,contentPane);
 						errMsg.setText("");
 						turnLeft--;
 					}
-					
 					else errMsg.setText("Unvalid");
 				}
 				else{
 					refreshBoard(contentPane);
 				}
-				clearBoard(board);
-				updateBoard(board);
-				refreshBoard(contentPane);
+				refreshAll(board,contentPane);
 		}
 	}
-	
 	/**
 	 * @param board
 	 */
@@ -514,42 +497,33 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 			}
 		}
 	}
+	public void btnTemplate(JButton btn, GridBagConstraints gbc,int i,int j){
+		btn.setBackground(new Color(0,180,0));
+		btn.setPreferredSize(new Dimension(45, 45));
+		gbc.gridx = i;
+		gbc.gridy = j;
+		gbc.fill = GridBagConstraints.BOTH;
+	}
 	public void updateBoard(Board board) {
 		for(int i = 3; i<11; i++){
 			for(int j =2; j<10; j++){
 				btn[i-3][j-2] = new JButton();
 				GridBagConstraints gbc_btn = new GridBagConstraints();
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==0){
-					btn[i-3][j-2].setBackground(new Color(0,180,0));
-					btn[i-3][j-2].setPreferredSize(new Dimension(45, 45));
-					gbc_btn.gridx = i;
-					gbc_btn.gridy = j;
-					gbc_btn.fill = GridBagConstraints.BOTH;
+					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==-1){
-					btn[i-3][j-2].setBackground(new Color(0,180,0));
 					Icon b = new ImageIcon(getClass().getResource("/bd.png"));
-					btn[i-3][j-2].setPreferredSize(new Dimension(45, 45));
 					btn[i-3][j-2].setIcon(b);
-					gbc_btn.gridx = i;
-					gbc_btn.gridy = j;
-					gbc_btn.fill = GridBagConstraints.BOTH;
+					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==1){
-					btn[i-3][j-2].setBackground(new Color(0,180,0));
 					Icon b = new ImageIcon(getClass().getResource("/wd.png"));
-					btn[i-3][j-2].setPreferredSize(new Dimension(45, 45));
 					btn[i-3][j-2].setIcon(b);
-					gbc_btn.gridx = i;
-					gbc_btn.gridy = j;
-					gbc_btn.fill = GridBagConstraints.BOTH;
+					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==2){
-					btn[i-3][j-2].setBackground(new Color(0,180,0));
-					btn[i-3][j-2].setPreferredSize(new Dimension(45, 45));
-					gbc_btn.gridx = i;
-					gbc_btn.gridy = j;
-					gbc_btn.fill = GridBagConstraints.BOTH;
+					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				btn[i-3][j-2].addActionListener(this);
 				btn[i-3][j-2].setName("" + (i-3) + "," + (j-2));
@@ -564,36 +538,21 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 				btn[i-3][j-2] = new JButton();
 				GridBagConstraints gbc_btn = new GridBagConstraints();
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==0){
-					btn[i-3][j-2].setBackground(new Color(0,180,0));
-					btn[i-3][j-2].setPreferredSize(new Dimension(45, 45));
-					gbc_btn.gridx = i;
-					gbc_btn.gridy = j;
-					gbc_btn.fill = GridBagConstraints.BOTH;
+					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==-1){
-					btn[i-3][j-2].setBackground(new Color(0,180,0));
 					Icon b = new ImageIcon(getClass().getResource("/bd.png"));
-					btn[i-3][j-2].setPreferredSize(new Dimension(45, 45));
 					btn[i-3][j-2].setIcon(b);
-					gbc_btn.gridx = i;
-					gbc_btn.gridy = j;
-					gbc_btn.fill = GridBagConstraints.BOTH;
+					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==1){
-					btn[i-3][j-2].setBackground(new Color(0,180,0));
 					Icon b = new ImageIcon(getClass().getResource("/wd.png"));
-					btn[i-3][j-2].setPreferredSize(new Dimension(45, 45));
 					btn[i-3][j-2].setIcon(b);
-					gbc_btn.gridx = i;
-					gbc_btn.gridy = j;
-					gbc_btn.fill = GridBagConstraints.BOTH;
+					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==2){
-					btn[i-3][j-2].setBackground(new Color(0,180,150));
-					btn[i-3][j-2].setPreferredSize(new Dimension(45, 45));
-					gbc_btn.gridx = i;
-					gbc_btn.gridy = j;
-					gbc_btn.fill = GridBagConstraints.BOTH;
+					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
+					btn[i-3][j-2].setBackground(new Color(0,150,150));
 				}
 				btn[i-3][j-2].addActionListener(this);
 				btn[i-3][j-2].setName("" + (i-3) + "," + (j-2));
@@ -611,10 +570,17 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 	
 	public void updatePlayerTurn() {
 		if(turnLeft%2 == 1){
-			turn.setText("Black");
-		}
-		if(turnLeft%2 == 0){
 			turn.setText("White");
 		}
+		if(turnLeft%2 == 0){
+			turn.setText("Black");
+		}
+	}
+	public void refreshAll(Board board, JPanel contentPane){
+		clearBoard(board);
+		updateBoard(board);
+		updatePlayerTurn();
+		updateScore();
+		refreshBoard(contentPane);
 	}
 }
