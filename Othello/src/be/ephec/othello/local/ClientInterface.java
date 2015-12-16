@@ -19,6 +19,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import be.ephec.othello.models.Board;
+import be.ephec.othello.models.Pawn;
+
 import javax.swing.JEditorPane;
 
 public class ClientInterface extends JFrame implements ActionListener {

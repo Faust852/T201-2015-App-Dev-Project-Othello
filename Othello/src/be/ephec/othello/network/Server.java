@@ -1,8 +1,14 @@
-package be.ephec.othello.local;
-import java.io.*;
-import java.net.*;
+package be.ephec.othello.network;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+
+import be.ephec.othello.local.ServerGUI;
 
 /*
  * The server that can be run both as a console application or a GUI
@@ -91,7 +97,7 @@ public class Server {
     /*
      * For the GUI to stop the server
      */
-	protected void stop() {
+	public void stop() {
 		keepGoing = false;
 		// connect to myself as Client to exit statement 
 		// Socket socket = serverSocket.accept();
@@ -239,7 +245,7 @@ public class Server {
 				catch(ClassNotFoundException e2) {
 					break;
 				}
-				// the messaage part of the ChatMessage
+				// the message part of the ChatMessage
 				String message = cm.getMessage();
 
 				// Switch on the type of message receive
@@ -247,17 +253,6 @@ public class Server {
 
 				case ChatMessage.MESSAGE:
 					broadcast(username + ": " + message);
-					break;
-				case ChatMessage.LOGOUT:
-					display(username + " disconnected with a LOGOUT message.");
-					keepGoing = false;
-					break;
-				case ChatMessage.WHOISIN:
-					writeMsg("List of the users connected at " + sdf.format(new Date()) + "\n");
-					for(int i = 0; i < al.size(); ++i) {
-						ClientThread ct = al.get(i);
-						writeMsg((i+1) + ") " + ct.username + " since " + ct.date);
-					}
 					break;
 				}
 			}

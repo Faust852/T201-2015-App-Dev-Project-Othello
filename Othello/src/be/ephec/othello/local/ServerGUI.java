@@ -15,6 +15,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import be.ephec.othello.network.Server;
+
 /*
  * The server as a GUI
  */
@@ -66,11 +68,11 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 
 	// append message to the two JTextArea
 	// position at the end
-	void appendRoom(String str) {
+	public void appendRoom(String str) {
 		chat.append(str);
 		chat.setCaretPosition(chat.getText().length() - 1);
 	}
-	void appendEvent(String str) {
+	public void appendEvent(String str) {
 		event.append(str);
 		event.setCaretPosition(chat.getText().length() - 1);
 		

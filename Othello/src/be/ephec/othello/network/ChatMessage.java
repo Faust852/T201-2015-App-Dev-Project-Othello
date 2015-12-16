@@ -1,4 +1,4 @@
-package be.ephec.othello.local;
+package be.ephec.othello.network;
 import java.io.Serializable;
 /*
  * This class defines the different type of messages that will be exchanged between the
@@ -10,16 +10,13 @@ public class ChatMessage implements Serializable {
 	
 	protected static final long serialVersionUID = 1112122200L;
 
-	// The different types of message sent by the Client
-	// WHOISIN to receive the list of the users connected
 	// MESSAGE an ordinary message
-	// LOGOUT to disconnect from the Server
-	static final int WHOISIN = 0, MESSAGE = 1, LOGOUT = 2;
+	public static final int MESSAGE = 1;
 	private int type;
 	private String message;
 	
 	// constructor
-	ChatMessage(int type, String message) {
+	public ChatMessage(int type, String message) {
 		this.type = type;
 		this.message = message;
 	}

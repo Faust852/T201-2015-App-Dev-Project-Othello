@@ -1,4 +1,4 @@
-package be.ephec.othello.local;
+package be.ephec.othello.models;
 
 import java.util.Hashtable;
 
@@ -73,7 +73,7 @@ public class Board {
 		return boardSize;
 	}
 	/**
-	 * This method check wether a coordinate is inside the board or not, prevent OutOfBound error.
+	 * This method check whether a coordinate is inside the board or not, prevent OutOfBound error.
 	 * @param row, x axis
 	 * @param col, y axis
 	 * @return true if a case is in the board, return false if not
@@ -88,7 +88,7 @@ public class Board {
 		}
 	}
 	/**
-	 * This method check wether a case has opposite pawns beside it. If it does, set its coordinate to true (to utilise alongside the arrays of direction).
+	 * This method check whether a case has opposite pawns beside it. If it does, set its coordinate to true (to utilise alongside the arrays of direction).
 	 * @param row
 	 * @param col
 	 * @param currentPawnColor, color of current player

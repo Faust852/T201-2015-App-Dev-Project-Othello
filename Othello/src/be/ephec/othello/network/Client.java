@@ -1,9 +1,11 @@
-package be.ephec.othello.local;
+package be.ephec.othello.network;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
+
+import be.ephec.othello.local.ClientInterface2;
 
 /*
  * The Client that can be run both as a console or a GUI
@@ -37,7 +39,7 @@ public class Client  {
 	 * Constructor call when used from a GUI
 	 * in console mode the ClienGUI parameter is null
 	 */
-	Client(String server, int port, String username, ClientInterface2 cg) {
+	public Client(String server, int port, String username, ClientInterface2 cg) {
 		this.server = server;
 		this.port = port;
 		this.username = username;
@@ -97,13 +99,13 @@ public class Client  {
 		if(cg == null)
 			System.out.println(msg);      // println in console mode
 		else
-			cg.append(msg + "\n");		// append to the ClientGUI JTextArea (or whatever)
+			cg.append(username+" : "+msg + "\n");		// append to the Client JTextArea (or whatever)
 	}
 	
 	/*
 	 * To send a message to the server
 	 */
-	void sendMessage(ChatMessage msg) {
+	public void sendMessage(ChatMessage msg) {
 		try {
 			sOutput.writeObject(msg);
 		}
@@ -199,19 +201,8 @@ public class Client  {
 			System.out.print("> ");
 			// read message from user
 			String msg = scan.nextLine();
-			// logout if message is LOGOUT
-			if(msg.equalsIgnoreCase("LOGOUT")) {
-				client.sendMessage(new ChatMessage(ChatMessage.LOGOUT, ""));
-				// break to do the disconnect
-				break;
-			}
-			// message WhoIsIn
-			else if(msg.equalsIgnoreCase("WHOISIN")) {
-				client.sendMessage(new ChatMessage(ChatMessage.WHOISIN, ""));				
-			}
-			else {				// default to ordinary message
 				client.sendMessage(new ChatMessage(ChatMessage.MESSAGE, msg));
-			}
+				break;
 		}
 		// done disconnect
 		client.disconnect();	
