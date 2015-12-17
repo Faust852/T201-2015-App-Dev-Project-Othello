@@ -7,37 +7,42 @@ import java.util.Scanner;
 
 import be.ephec.othello.local.ClientInterface2;
 
-/*
- * The Client that can be run both as a console or a GUI
+
+/**
+ * A network Client (He can run either in a console or a GUI)
+ * The console way, was for testing before we make the GUI 
+ * @authors Adrien Culem and David Micciche
  */
 public class Client  {
 
-	// for I/O
 	private ObjectInputStream sInput;		// to read from the socket
 	private ObjectOutputStream sOutput;		// to write on the socket
 	private Socket socket;
 
-	// if I use a GUI or not
 	private ClientInterface2 cg;
 	
-	// the server, the port and the username
 	private String server, username;
 	private int port;
 
-	/*
-	 *  Constructor called by console mode
-	 *  server: the server address
-	 *  port: the port number
-	 *  username: the username
+
+	/**
+	 * The constructor for a console client
+	 * @param server the Ip of the server
+	 * @param port of creation
+	 * @param username you want to use
 	 */
-	Client(String server, int port, String username) {
+	public Client(String server, int port, String username) {
 		// which calls the common constructor with the GUI set to null
 		this(server, port, username, null);
 	}
 
-	/*
-	 * Constructor call when used from a GUI
-	 * in console mode the ClienGUI parameter is null
+	
+	/**
+	 * The constructor for a GUI client
+	 * @param server the Ip of the server
+	 * @param port of creation
+	 * @param username you want to use
+	 * @param cg is the GUI 
 	 */
 	public Client(String server, int port, String username, ClientInterface2 cg) {
 		this.server = server;
@@ -47,15 +52,15 @@ public class Client  {
 		this.cg = cg;
 	}
 	
-	/*
-	 * To start the dialog
+	
+	/**
+	 * To launch a new Socket (When you connect) 
+	 * @return a boolean to manage if the connection worked or not
 	 */
 	public boolean start() {
-		// try to connect to the server
 		try {
 			socket = new Socket(server, port);
 		} 
-		// if it failed not much I can so
 		catch(Exception ec) {
 			display("Error connectiong to server:" + ec);
 			return false;
@@ -63,10 +68,9 @@ public class Client  {
 		
 		String msg = "Connection accepted " + socket.getInetAddress() + ":" + socket.getPort();
 		display(msg);
-	
-		/* Creating both Data Stream */
 		try
 		{
+			//input first
 			sInput  = new ObjectInputStream(socket.getInputStream());
 			sOutput = new ObjectOutputStream(socket.getOutputStream());
 		}
@@ -74,11 +78,7 @@ public class Client  {
 			display("Exception creating new Input/output Streams: " + eIO);
 			return false;
 		}
-
-		// creates the Thread to listen from the server 
 		new ListenFromServer().start();
-		// Send our username to the server this is the only message that we
-		// will send as a String. All other messages will be ChatMessage objects
 		try
 		{
 			sOutput.writeObject(username);
@@ -88,22 +88,24 @@ public class Client  {
 			disconnect();
 			return false;
 		}
-		// success we inform the caller that it worked
 		return true;
 	}
 
-	/*
-	 * To send a message to the console or the GUI
+	/**
+	 * Send the message in param to the GUI or the console 
+	 * @param msg is what you want to send to the GUI or the console
 	 */
 	private void display(String msg) {
 		if(cg == null)
-			System.out.println(msg);      // println in console mode
+			System.out.println(msg);     //For the console
 		else
-			cg.append(username+" : "+msg + "\n");		// append to the Client JTextArea (or whatever)
+			cg.append(username+" : "+msg + "\n");		//For the GUI
 	}
 	
-	/*
-	 * To send a message to the server
+	
+	/**
+	 * Send the message in param to the server
+	 * @param msg is what you want to send to the server
 	 */
 	public void sendMessage(ChatMessage msg) {
 		try {
@@ -114,25 +116,26 @@ public class Client  {
 		}
 	}
 
-	/*
-	 * When something goes wrong
-	 * Close the Input/Output streams and disconnect not much to do in the catch clause
+	
+	/**
+	 * Whenever something goes wrong close the output/input streams
+	 * and the socket
 	 */
 	private void disconnect() {
 		try { 
 			if(sInput != null) sInput.close();
 		}
-		catch(Exception e) {} // not much else I can do
+		catch(Exception e) {}
 		try {
 			if(sOutput != null) sOutput.close();
 		}
-		catch(Exception e) {} // not much else I can do
+		catch(Exception e) {}
         try{
 			if(socket != null) socket.close();
 		}
-		catch(Exception e) {} // not much else I can do
+		catch(Exception e) {}
 		
-		// inform the GUI
+		// Write on the GUI
 		if(cg != null)
 			cg.connectionFailed();
 			
@@ -150,23 +153,19 @@ public class Client  {
 	 * > java Client 
 	 * is equivalent to
 	 * > java Client Anonymous 1500 localhost 
-	 * are eqquivalent
-	 * 
 	 * In console mode, if an error occurs the program simply stops
 	 * when a GUI id used, the GUI is informed of the disconnection
 	 */
 	public static void main(String[] args) {
-		// default values
+		
 		int portNumber = 1500;
 		String serverAddress = "localhost";
 		String userName = "Anonymous";
 
-		// depending of the number of arguments provided we fall through
+		
 		switch(args.length) {
-			// > javac Client username portNumber serverAddr
 			case 3:
 				serverAddress = args[2];
-			// > javac Client username portNumber
 			case 2:
 				try {
 					portNumber = Integer.parseInt(args[1]);
@@ -176,49 +175,38 @@ public class Client  {
 					System.out.println("Usage is: > java Client [username] [portNumber] [serverAddress]");
 					return;
 				}
-			// > javac Client username
 			case 1: 
 				userName = args[0];
-			// > java Client
 			case 0:
 				break;
-			// invalid number of arguments
 			default:
 				System.out.println("Usage is: > java Client [username] [portNumber] {serverAddress]");
 			return;
 		}
-		// create the Client object
 		Client client = new Client(serverAddress, portNumber, userName);
-		// test if we can start the connection to the Server
-		// if it failed nothing we can do
+		
 		if(!client.start())
 			return;
-		
-		// wait for messages from user
 		Scanner scan = new Scanner(System.in);
-		// loop forever for message from the user
 		while(true) {
 			System.out.print("> ");
-			// read message from user
 			String msg = scan.nextLine();
 				client.sendMessage(new ChatMessage(ChatMessage.MESSAGE, msg));
 				break;
 		}
-		// done disconnect
 		client.disconnect();	
 	}
 
-	/*
-	 * a class that waits for the message from the server and append them to the JTextArea
-	 * if we have a GUI or simply System.out.println() it in console mode
+	/**
+	 * Wait for a message and append it to the console or the GUI
+	 * @authors Adrien Culem and David Micciche
 	 */
-	class ListenFromServer extends Thread {
+	public class ListenFromServer extends Thread {
 
 		public void run() {
 			while(true) {
 				try {
 					String msg = (String) sInput.readObject();
-					// if console mode print the message and add back the prompt
 					if(cg == null) {
 						System.out.println(msg);
 						System.out.print("> ");
@@ -233,7 +221,6 @@ public class Client  {
 						cg.connectionFailed();
 					break;
 				}
-				// can't happen with a String object but need the catch anyhow
 				catch(ClassNotFoundException e2) {
 				}
 			}

@@ -1,9 +1,9 @@
 package be.ephec.othello.models;
 
 /**
- * @author David Micciche
+ * Allow us to recognize the state of a pawn, White, Black, Empty or Possible
+ * @author David Micciche and Adrien Culem
  * @version 0.0
- *
  */
 public class Pawn {
 	protected int stateOfPawn;

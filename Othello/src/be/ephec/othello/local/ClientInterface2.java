@@ -24,45 +24,57 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 
 import be.ephec.othello.models.Board;
+import be.ephec.othello.models.Move;
 import be.ephec.othello.models.Pawn;
 import be.ephec.othello.network.ChatMessage;
 import be.ephec.othello.network.Client;
 
+/**
+ * This class display the Graphic Interface of the Othello Game
+ * @authors Adrien Culem and David Micciche
+ */
 public class ClientInterface2 extends JFrame implements ActionListener {
 
+	/**
+	 * Main JPanel of the JFrame
+	 */
 	private JPanel contentPane;
 	
 	private JButton btn[][] = new JButton[8][8];
+	private JButton btnPlayAgainstIa;
+	private JButton btnHelp;
+	private JButton btnConnect;
+	private JButton btnChat;
+	private JButton btnNewGame;
+	
 	private JLabel lbl[] = new JLabel[8];
 	private JLabel lbltxt[] = new JLabel[8];
 	private JLabel errMsg = new JLabel();
-
-	private Board board = new Board();
-	private int turnLeft = 60;
-	
-	private boolean iaBool = false;
+	private JLabel turn;
+	private JLabel lblIp;
+	private JLabel lblPort;
+	private JLabel lblName;
+	private JLabel lblScore;
+	private JLabel lblWhite;
+	private JLabel lblBlack;
+	private JLabel lblTurn;
 	
 	private JTextField whiteScore;
 	private JTextField blackScore;
-	private JLabel turn;
-	private JButton btnPlayAgainstIa;
-	private JButton btnHelp;
 	private JTextField txtIp;
-	private JLabel lblIp;
-	private JLabel lblPort;
 	private JTextField portField;
-	private JButton btnConnect;
-	private JButton btnChat;
 	private JTextField textField_2;
-	private JLabel lblName;
-	
 	private JTextField tf;
+	private JTextField chat;
+
+	private Board board = new Board();
+	private int turnLeft = 60;
+	private boolean iaBool = false;
 	private boolean connected;
 	private Client client;
 	private int defaultPort;
 	private String defaultHost;
 	private JTextArea textArea;
-	private JTextField chat;
 
 	/**
 	 * Launch the application.
@@ -94,6 +106,8 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 
 	/**
 	 * Create the frame.
+	 * @param host is IP of the server for the chat
+	 * @param port is the port used when creating the server
 	 */
 	public ClientInterface2(String host, int port) {
 		super("Chat CLient");
@@ -112,7 +126,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 			
-		JButton btnNewGame = new JButton("New Game");
+		btnNewGame = new JButton("New Game");
 		btnNewGame.setBackground(Color.LIGHT_GRAY);
 		btnNewGame.addActionListener(this);
 		
@@ -208,7 +222,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_textArea.gridy = 5;
 		contentPane.add(textArea, gbc_textArea);
 		
-		JLabel lblScore = new JLabel("Score :");
+		lblScore = new JLabel("Score :");
 		GridBagConstraints gbc_lblScore = new GridBagConstraints();
 		gbc_lblScore.gridwidth = 4;
 		gbc_lblScore.insets = new Insets(0, 0, 5, 5);
@@ -216,7 +230,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_lblScore.gridy = 7;
 		contentPane.add(lblScore, gbc_lblScore);
 		
-		JLabel lblWhite = new JLabel("White");
+		lblWhite = new JLabel("White");
 		GridBagConstraints gbc_lblWhite = new GridBagConstraints();
 		gbc_lblWhite.gridwidth = 2;
 		gbc_lblWhite.insets = new Insets(0, 0, 5, 5);
@@ -236,7 +250,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		contentPane.add(whiteScore, gbc_whiteScore);
 		whiteScore.setColumns(10);
 		
-		JLabel lblBlack = new JLabel("Black");
+		lblBlack = new JLabel("Black");
 		GridBagConstraints gbc_lblBlack = new GridBagConstraints();
 		gbc_lblBlack.gridwidth = 2;
 		gbc_lblBlack.insets = new Insets(0, 0, 5, 5);
@@ -275,7 +289,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		contentPane.add(tf, gbc_textField_1);
 		tf.setColumns(10);
 		
-		JLabel lblTurn = new JLabel("Turn :");
+		lblTurn = new JLabel("Turn :");
 		GridBagConstraints gbc_lblTurn = new GridBagConstraints();
 		gbc_lblTurn.insets = new Insets(0, 0, 0, 5);
 		gbc_lblTurn.gridx = 3;
@@ -349,30 +363,32 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		
 		updateBoard(board);
 	}
-	public int[] ParseCoordinate(String s) {
-		String string[] = s.split(",");
-		int[] coordinate = new int[2];
-		coordinate[0] = Integer.parseInt(string[0]);
-		coordinate[1] = Integer.parseInt(string[1]);
-		return coordinate;
-	}
 	
+	/**
+	 * Allow the player to play on the actual board
+	 * @param board is the actual board of the game 
+	 * @param player is the state of the clicked pawn (White, Black, Empty)
+	 * @param coordonnee is where the player clicked
+	 */
 	public void ActionPlayer(Board board, Pawn player, int[] coordonnee) {
 		board.flipPawn(coordonnee[0], coordonnee[1], player);
 		board.AllValidMove(player);
 		refreshAll(board,contentPane);
 	}
 	
-	public void refreshBoard(JPanel contentPane){
-		contentPane.revalidate();
-		contentPane.repaint();
-	}
 	
+	/**
+	 * Write in the chat 
+	 * @param str is what will be write
+	 */
 	public void append(String str) {
 		textArea.append(str);
 		textArea.setCaretPosition(textArea.getText().length() - 1);
 	}
 	
+	/**
+	 * Manage the case when the Connection with the server is failed 
+	 */
 	public void connectionFailed() {
 		btnConnect.setEnabled(true);
 		lblName.setText("Enter your username below");
@@ -384,6 +400,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		tf.removeActionListener(this);
 		connected = false;
 	}
+	
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -421,6 +438,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 			case "Chat" :
 				String text = chat.getText().trim();
 				client.sendMessage(new ChatMessage(ChatMessage.MESSAGE,text));
+				break;
 			case "New Game" :
 				iaBool = false;
 				turnLeft = 60;
@@ -440,13 +458,13 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 					board.AllValidMove(new Pawn(-1));
 					}
 				else{board.AllValidMove(new Pawn(1));}
-				clearBoard(board);
+				Move.clearBoard(board, contentPane, btn);
 				updateBoardWithHelp(board);
-				refreshBoard(contentPane);
+				Move.refreshBoard(contentPane);
 				break;
 			default :
 				JButton jb = (JButton) e.getSource();
-				int[] coordonnee = ParseCoordinate(jb.getName());
+				int[] coordonnee = Move.ParseCoordinate(jb.getName());
 				if(turnLeft%2 == 0 && turnLeft != 0 && !iaBool) {
 					normalMoveFromHuman(new Pawn(-1),coordonnee);
 				}
@@ -459,7 +477,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 						String nom = board.PointCounter(new Pawn(-1)) > board.PointCounter(new Pawn(1)) ? "Black" : "White";
 						JOptionPane.showMessageDialog(null,"Game ended ! Congratz to "+nom);
 						}
-					clearBoard(board);
+					Move.clearBoard(board, contentPane, btn);
 					updateBoard(board);
 					if (board.getBoard()[coordonnee[0]][coordonnee[1]].getValueOfPawn()==Pawn.getPossiblePawn()) {
 						ActionPlayer(board, new Pawn(-1), coordonnee);
@@ -482,19 +500,25 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 					else errMsg.setText("Unvalid");
 				}
 				else{
-					refreshBoard(contentPane);
+					Move.refreshBoard(contentPane);
 				}
 				refreshAll(board,contentPane);
 		}
 	}
 	
+	/**
+	 * Allow a Human to play, check first if the game isn't over, if it's not
+	 * It will execute the action of flipping pawns etc
+	 * @param player the state of the clicked pawn
+	 * @param coordonnee the position of this pawn
+	 */
 	public void normalMoveFromHuman(Pawn player, int[] coordonnee) {
 		board.AllValidMove(player);
 		if(!board.isAnyMoveLeft(player)){
 			String nom = board.PointCounter(player) > board.PointCounter(player.getOppositeColorPawn()) ? "Black" : "White";
 			JOptionPane.showMessageDialog(null,"Game ended ! Congratz to "+nom);
 			}
-		clearBoard(board);
+		Move.clearBoard(board, contentPane, btn);
 		updateBoard(board);
 		if (board.getBoard()[coordonnee[0]][coordonnee[1]].getValueOfPawn()==Pawn.getPossiblePawn()) {
 			ActionPlayer(board, player, coordonnee);
@@ -505,22 +529,9 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		else errMsg.setText("Unvalid");
 	}
 	/**
-	 * @param board
+	 * Create the board at first, and is used to change the board after an action is made
+	 * @param board is the actual board
 	 */
-	public void clearBoard(Board board) {
-		for(int i = 3; i<11; i++){
-			for(int j =2; j<10; j++){
-				contentPane.remove(btn[i-3][j-2]);
-			}
-		}
-	}
-	public void btnTemplate(JButton btn, GridBagConstraints gbc,int i,int j){
-		btn.setBackground(new Color(0,180,0));
-		btn.setPreferredSize(new Dimension(45, 45));
-		gbc.gridx = i;
-		gbc.gridy = j;
-		gbc.fill = GridBagConstraints.BOTH;
-	}
 	public void updateBoard(Board board) {
 		
 		for(int i = 3; i<11; i++){
@@ -528,20 +539,20 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 				btn[i-3][j-2] = new JButton();
 				GridBagConstraints gbc_btn = new GridBagConstraints();
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==0){
-					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
+					Move.btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==-1){
 					Icon b = new ImageIcon(getClass().getResource("/bd.png"));
 					btn[i-3][j-2].setIcon(b);
-					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
+					Move.btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==1){
 					Icon b = new ImageIcon(getClass().getResource("/wd.png"));
 					btn[i-3][j-2].setIcon(b);
-					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
+					Move.btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==2){
-					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
+					Move.btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				btn[i-3][j-2].addActionListener(this);
 				btn[i-3][j-2].setName("" + (i-3) + "," + (j-2));
@@ -551,26 +562,31 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		}
 		Param.setBoard(board);
 	}
+	
+	/**
+	 * Display the all the available moves when you click the Help button
+	 * @param board is the actual board
+	 */
 	public void updateBoardWithHelp(Board board) {
 		for(int i = 3; i<11; i++){
 			for(int j =2; j<10; j++){
 				btn[i-3][j-2] = new JButton();
 				GridBagConstraints gbc_btn = new GridBagConstraints();
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==0){
-					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
+					Move.btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==-1){
 					Icon b = new ImageIcon(getClass().getResource("/bd.png"));
 					btn[i-3][j-2].setIcon(b);
-					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
+					Move.btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==1){
 					Icon b = new ImageIcon(getClass().getResource("/wd.png"));
 					btn[i-3][j-2].setIcon(b);
-					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
+					Move.btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 				}
 				if(board.getBoard()[i-3][j-2].getValueOfPawn()==2){
-					btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
+					Move.btnTemplate(btn[i-3][j-2], gbc_btn, i, j);
 					btn[i-3][j-2].setBackground(new Color(0,150,150));
 				}
 				btn[i-3][j-2].addActionListener(this);
@@ -580,26 +596,17 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 			}
 		}
 	}
-	public void updateScore() {
-		int scoreW = board.PointCounter(new Pawn(1));
-		int scoreB = board.PointCounter(new Pawn(-1));
-		blackScore.setText(""+scoreB);
-		whiteScore.setText(""+scoreW);
-	}
-	
-	public void updatePlayerTurn() {
-		if(turnLeft%2 == 1){
-			turn.setText("White");
-		}
-		if(turnLeft%2 == 0){
-			turn.setText("Black");
-		}
-	}
+	/**
+	 * Make all the methods of clearing, updating the board after a move 
+	 * @param board is the actual board
+	 * @param contentPane the main JPanel 
+	 */
 	public void refreshAll(Board board, JPanel contentPane){
-		clearBoard(board);
+		//clearBoard(board);
+		Move.clearBoard(board, contentPane, btn);
 		updateBoard(board);
-		updatePlayerTurn();
-		updateScore();
-		refreshBoard(contentPane);
+		Move.updatePlayerTurn(turnLeft, turn);
+		Move.updateScore(board, blackScore, whiteScore);
+		Move.refreshBoard(contentPane);
 	}
 }

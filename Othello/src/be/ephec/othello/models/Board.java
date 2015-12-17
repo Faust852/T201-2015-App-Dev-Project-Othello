@@ -3,7 +3,7 @@ package be.ephec.othello.models;
 import java.util.Hashtable;
 
 /**
- * @author David Micciche
+ * @authors David Micciche and Adrien Culem
  * @version 0.0
  * Main logic class, this class handle things like moves, flipping pawns, check if a move is possible...
  *
