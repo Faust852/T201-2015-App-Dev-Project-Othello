@@ -18,6 +18,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 
 import be.ephec.othello.models.Board;
@@ -65,10 +67,20 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (Exception e) {
+		    // If Nimbus is not available, you can set the GUI to another look and feel.
+		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ClientInterface2 frame = new ClientInterface2();
+					ClientInterface2 frame = new ClientInterface2("localhost", 1500);
 					ImageIcon b = new ImageIcon(getClass().getResource("/bd.png"));
 					frame.setIconImage(b.getImage());
 					frame.setVisible(true);
@@ -82,21 +94,25 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 	/**
 	 * Create the frame.
 	 */
-	public ClientInterface2() {
+	public ClientInterface2(String host, int port) {
+		super("Chat CLient");
+		defaultPort = port;
+		defaultHost = host;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(true);
-		setBounds(100, 100, 1084, 596);
+		setBounds(100, 100, 1039, 587);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 45, 11, 45, 45, 45, 45, 45, 45, 45, 45, 0, 53, 45, 45, 45, 45, 41, 45, 45, 45, 45, 45, 45, 0};
+		gbl_contentPane.columnWidths = new int[]{23, 23, 23, 45, 45, 45, 45, 45, 45, 45, 45, 0, 23, 45, 45, 45, 45, 41, 45, 45, 45, 23, 23, 23, 0};
 		gbl_contentPane.rowHeights = new int[]{45, 0, 0, 45, 45, 45, 45, 45, 45, 45, 45, 45, 0};
 		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 			
 		JButton btnNewGame = new JButton("New Game");
+		btnNewGame.setBackground(Color.LIGHT_GRAY);
 		btnNewGame.addActionListener(this);
 		
 		lblIp = new JLabel("IP");
@@ -124,9 +140,6 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_btnNewGame.gridy = 3;
 		contentPane.add(btnNewGame, gbc_btnNewGame);
 		
-		btnPlayAgainstIa = new JButton("Play Against IA");
-		btnPlayAgainstIa.addActionListener(this);
-		
 		lblPort = new JLabel("Port");
 		GridBagConstraints gbc_lblPort = new GridBagConstraints();
 		gbc_lblPort.insets = new Insets(0, 0, 5, 5);
@@ -153,6 +166,17 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_btnConnect.gridy = 3;
 		contentPane.add(btnConnect, gbc_btnConnect);
 		
+		btnPlayAgainstIa = new JButton("Play Against IA");
+		btnPlayAgainstIa.setBackground(Color.LIGHT_GRAY);
+		btnPlayAgainstIa.addActionListener(this);
+		GridBagConstraints gbc_btnPlayAgainstIa = new GridBagConstraints();
+		gbc_btnPlayAgainstIa.fill = GridBagConstraints.BOTH;
+		gbc_btnPlayAgainstIa.gridwidth = 5;
+		gbc_btnPlayAgainstIa.insets = new Insets(0, 0, 5, 5);
+		gbc_btnPlayAgainstIa.gridx = 13;
+		gbc_btnPlayAgainstIa.gridy = 4;
+		contentPane.add(btnPlayAgainstIa, gbc_btnPlayAgainstIa);
+		
 		lblName = new JLabel("Name");
 		GridBagConstraints gbc_lblName = new GridBagConstraints();
 		gbc_lblName.insets = new Insets(0, 0, 5, 5);
@@ -170,13 +194,6 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_textField_2.gridy = 4;
 		contentPane.add(textField_2, gbc_textField_2);
 		textField_2.setColumns(10);
-		GridBagConstraints gbc_btnPlayAgainstIa = new GridBagConstraints();
-		gbc_btnPlayAgainstIa.fill = GridBagConstraints.BOTH;
-		gbc_btnPlayAgainstIa.gridwidth = 5;
-		gbc_btnPlayAgainstIa.insets = new Insets(0, 0, 5, 5);
-		gbc_btnPlayAgainstIa.gridx = 13;
-		gbc_btnPlayAgainstIa.gridy = 5;
-		contentPane.add(btnPlayAgainstIa, gbc_btnPlayAgainstIa);
 		
 		textArea = new JTextArea();
 		GridBagConstraints gbc_textArea = new GridBagConstraints();
@@ -207,6 +224,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		contentPane.add(lblWhite, gbc_lblWhite);
 		
 		whiteScore = new JTextField();
+		whiteScore.setEnabled(false);
 		whiteScore.setEditable(false);
 		GridBagConstraints gbc_whiteScore = new GridBagConstraints();
 		gbc_whiteScore.gridwidth = 3;
@@ -226,6 +244,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		contentPane.add(lblBlack, gbc_lblBlack);
 		
 		blackScore = new JTextField();
+		blackScore.setEnabled(false);
 		blackScore.setEditable(false);
 		GridBagConstraints gbc_blackScore = new GridBagConstraints();
 		gbc_blackScore.gridwidth = 3;
@@ -236,6 +255,15 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		contentPane.add(blackScore, gbc_blackScore);
 		blackScore.setColumns(10);
 		
+		errMsg = new JLabel();
+		GridBagConstraints gbc_errMsg = new GridBagConstraints();
+		gbc_errMsg.gridwidth = 5;
+		gbc_errMsg.fill = GridBagConstraints.BOTH;
+		gbc_errMsg.insets = new Insets(0, 0, 5, 5);
+		gbc_errMsg.gridx = 13;
+		gbc_errMsg.gridy = 10;
+		contentPane.add(errMsg, gbc_errMsg);
+		
 		tf = new JTextField();
 		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
 		gbc_textField_1.gridwidth = 4;
@@ -245,14 +273,6 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc_textField_1.gridy = 10;
 		contentPane.add(tf, gbc_textField_1);
 		tf.setColumns(10);
-		
-		errMsg = new JLabel();
-		GridBagConstraints gbc_errMsg = new GridBagConstraints();
-		gbc_errMsg.fill = GridBagConstraints.BOTH;
-		gbc_errMsg.insets = new Insets(0, 0, 5, 5);
-		gbc_errMsg.gridx = 15;
-		gbc_errMsg.gridy = 10;
-		contentPane.add(errMsg, gbc_errMsg);
 		
 		JLabel lblTurn = new JLabel("Turn :");
 		GridBagConstraints gbc_lblTurn = new GridBagConstraints();
@@ -325,7 +345,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 			gbc_lbl.gridy = i+2;
 			contentPane.add(lbl[i], gbc_lbl);
 		}
-		
+
 		updateBoard(board);
 	}
 	public int[] ParseCoordinate(String s) {
@@ -366,12 +386,12 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(connected) {
-			// just have to send the message
-			client.sendMessage(new ChatMessage(ChatMessage.MESSAGE, chat.getText()));				
+		if(connected && btnChat.isSelected()) {
+		//	remember : invokelater was used here
+			client.sendMessage(new ChatMessage(ChatMessage.MESSAGE, chat.getText()));
 			tf.setText("");
 			return;
-		}
+		};
 		switch (e.getActionCommand()) {
 			case "Connect": 
 				String username = textField_2.getText();
@@ -384,17 +404,27 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 					port = Integer.parseInt(portNumber);
 				}
 				catch(Exception en) {
-					break;
+					//break;
 				}
 				client = new Client(server, port, username, this);
-				if(!client.start()) break;
+				if(!client.start())// break;
 				connected = true;
 				textField_2.setEditable(false);
+				textField_2.setEnabled(false);
 				btnConnect.setEnabled(false);
 				txtIp.setEditable(false);
+				txtIp.setEnabled(false);
+				btnConnect.setEnabled(false);
 				portField.setEditable(false);
+				portField.setEnabled(false);
+				if (btnChat.isSelected()){
+					String text = chat.getText().trim();
+					client.sendMessage(new ChatMessage(ChatMessage.MESSAGE,text));
+					updateBoard(board);
+				}
 			case "Chat" :
 				String text = chat.getText().trim();
+				client.sendMessage(new ChatMessage(ChatMessage.MESSAGE,text));
 			case "New Game" :
 				iaBool = false;
 				turnLeft = 60;
@@ -505,6 +535,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		gbc.fill = GridBagConstraints.BOTH;
 	}
 	public void updateBoard(Board board) {
+		
 		for(int i = 3; i<11; i++){
 			for(int j =2; j<10; j++){
 				btn[i-3][j-2] = new JButton();
