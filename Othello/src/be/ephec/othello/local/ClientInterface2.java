@@ -2,7 +2,6 @@ package be.ephec.othello.local;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,6 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
@@ -45,7 +46,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 	private JTextField blackScore;
 	private JLabel turn;
 	private JButton btnPlayAgainstIa;
-	JButton btnHelp;
+	private JButton btnHelp;
 	private JTextField txtIp;
 	private JLabel lblIp;
 	private JLabel lblPort;
@@ -77,7 +78,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 		} catch (Exception e) {
 		    // If Nimbus is not available, you can set the GUI to another look and feel.
 		}
-		EventQueue.invokeLater(new Runnable() {
+		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					ClientInterface2 frame = new ClientInterface2("localhost", 1500);
@@ -345,7 +346,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 			gbc_lbl.gridy = i+2;
 			contentPane.add(lbl[i], gbc_lbl);
 		}
-
+		
 		updateBoard(board);
 	}
 	public int[] ParseCoordinate(String s) {
@@ -417,11 +418,6 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 				btnConnect.setEnabled(false);
 				portField.setEditable(false);
 				portField.setEnabled(false);
-				if (btnChat.isSelected()){
-					String text = chat.getText().trim();
-					client.sendMessage(new ChatMessage(ChatMessage.MESSAGE,text));
-					updateBoard(board);
-				}
 			case "Chat" :
 				String text = chat.getText().trim();
 				client.sendMessage(new ChatMessage(ChatMessage.MESSAGE,text));
@@ -452,36 +448,10 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 				JButton jb = (JButton) e.getSource();
 				int[] coordonnee = ParseCoordinate(jb.getName());
 				if(turnLeft%2 == 0 && turnLeft != 0 && !iaBool) {
-					board.AllValidMove(new Pawn(-1));
-					if(!board.isAnyMoveLeft(new Pawn(-1))){
-						String nom = board.PointCounter(new Pawn(-1)) > board.PointCounter(new Pawn(1)) ? "Black" : "White";
-						JOptionPane.showMessageDialog(null,"Game ended ! Congratz to "+nom);
-						}
-					clearBoard(board);
-					updateBoard(board);
-					if (board.getBoard()[coordonnee[0]][coordonnee[1]].getValueOfPawn()==Pawn.getPossiblePawn()) {
-						ActionPlayer(board, new Pawn(-1), coordonnee);
-						refreshAll(board,contentPane);
-						errMsg.setText("");
-						turnLeft--;
-					}
-					else errMsg.setText("Unvalid");
+					normalMoveFromHuman(new Pawn(-1),coordonnee);
 				}
 				else if(turnLeft%2 == 1 && turnLeft != 0 && !iaBool) {
-					board.AllValidMove(new Pawn(1));
-					if(!board.isAnyMoveLeft(new Pawn(1))){
-						String nom = board.PointCounter(new Pawn(-1)) > board.PointCounter(new Pawn(1)) ? "Black" : "White";
-						JOptionPane.showMessageDialog(null,"Game ended ! Congratz to "+nom);
-						}
-					clearBoard(board);
-					updateBoard(board);
-					if (board.getBoard()[coordonnee[0]][coordonnee[1]].getValueOfPawn()==Pawn.getPossiblePawn()) {
-						ActionPlayer(board, new Pawn(1), coordonnee);
-						refreshAll(board,contentPane);
-						errMsg.setText("");
-						turnLeft--;
-					}
-					else errMsg.setText("Unvalid");
+					normalMoveFromHuman(new Pawn(1),coordonnee);
 				}
 				else if(turnLeft%2 == 0 && turnLeft != 0 && iaBool) {
 					board.AllValidMove(new Pawn(-1));
@@ -516,6 +486,23 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 				}
 				refreshAll(board,contentPane);
 		}
+	}
+	
+	public void normalMoveFromHuman(Pawn player, int[] coordonnee) {
+		board.AllValidMove(player);
+		if(!board.isAnyMoveLeft(player)){
+			String nom = board.PointCounter(player) > board.PointCounter(player.getOppositeColorPawn()) ? "Black" : "White";
+			JOptionPane.showMessageDialog(null,"Game ended ! Congratz to "+nom);
+			}
+		clearBoard(board);
+		updateBoard(board);
+		if (board.getBoard()[coordonnee[0]][coordonnee[1]].getValueOfPawn()==Pawn.getPossiblePawn()) {
+			ActionPlayer(board, player, coordonnee);
+			refreshAll(board,contentPane);
+			errMsg.setText("");
+			turnLeft--;
+		}
+		else errMsg.setText("Unvalid");
 	}
 	/**
 	 * @param board
@@ -562,6 +549,7 @@ public class ClientInterface2 extends JFrame implements ActionListener {
 				contentPane.add(btn[i-3][j-2],gbc_btn);
 			}
 		}
+		Param.setBoard(board);
 	}
 	public void updateBoardWithHelp(Board board) {
 		for(int i = 3; i<11; i++){

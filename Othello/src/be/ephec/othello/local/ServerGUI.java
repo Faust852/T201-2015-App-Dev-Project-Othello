@@ -32,7 +32,6 @@ public class ServerGUI extends JFrame implements ActionListener, WindowListener 
 	// my server
 	private Server server;
 	
-	
 	// server constructor that receive the port to listen to for connection as parameter
 	ServerGUI(int port) {
 		super("Chat Server");
